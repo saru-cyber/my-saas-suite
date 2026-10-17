@@ -1,0 +1,52 @@
+{
+  "metadata": {
+    "title": "Suite Hub"
+  },
+  "login": {
+    "title": "Suite Hub",
+    "subtitle": "モックログイン / 新規登録",
+    "email": "メールアドレス",
+    "password": "パスワード",
+    "register": "新規登録",
+    "login": "ログイン",
+    "purchase": "App1 (Proプラン) を購入する (Mock)",
+    "account": "{email} / plan={plan} / products={products}",
+    "none": "なし",
+    "registered": "登録しました",
+    "sessionConfirmed": "suite_session を確認しました: {email} / plan={plan} / products={products}",
+    "cookieFailed": "ログイン応答は成功しましたが、Cookieを確認できませんでした",
+    "network": "通信に失敗しました",
+    "redirectMissing": "リダイレクト先を取得できませんでした",
+    "invalidCredentials": "メールアドレスまたはパスワードが違います",
+    "emailTaken": "このメールアドレスは登録済みです",
+    "invalidInput": "メールアドレスと、8文字以上72文字以内のパスワードを入力してください"
+  },
+  "terms": {
+    "disclaimer": "⚠️ 本ドキュメントはプロトタイプ用の参考資料であり、本番運用時は弁護士等の専門家によるリーガルチェックが必要です。",
+    "title": "{suiteName} 利用規約",
+    "businessHeading": "事業者情報",
+    "businessName": "事業者名: [要手動編集: 事業者名]",
+    "representative": "代表者: [要手動編集: 代表者名]",
+    "address": "所在地: [要手動編集: 所在地]",
+    "contact": "連絡先: [要手動編集: 連絡先メールアドレス]",
+    "phone": "電話番号: [要手動編集: 電話番号]",
+    "scopeHeading": "1. 適用",
+    "scopeBody": "本規約は、{suiteName} およびこれに属する各プロダクトの利用条件を定めるものです。",
+    "accountHeading": "2. アカウント",
+    "accountBody": "利用者は、登録情報を正確に保ち、アカウントの管理責任を負います。",
+    "billingHeading": "3. 料金と支払い",
+    "billingBody": "有料プランの料金は、各プロダクトの料金表に表示された金額とします。",
+    "billingNote": "[要手動編集: 支払時期、請求方法、延滞時の扱い]",
+    "refundHeading": "4. 返金",
+    "refundBody": "[要手動編集: 返金規定]",
+    "prohibitedHeading": "5. 禁止事項",
+    "prohibitedBody": "法令または本規約に違反する行為、当社または第三者の権利を侵害する行為を禁止します。",
+    "liabilityHeading": "6. 免責と損害賠償",
+    "liabilityBody": "当社は、本サービスの中断、データの消失、利用者間または第三者との紛争について、法令で除外できない場合を除き責任を負いません。",
+    "liabilityNote": "[要手動編集: 損害賠償額の上限]",
+    "cancellationHeading": "7. 解約",
+    "cancellationBody": "[要手動編集: 解約条件と契約期間]",
+    "lawHeading": "8. 準拠法",
+    "lawBody": "[要手動編集: 準拠法と裁判管轄]"
+  }
+}

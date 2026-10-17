@@ -1,0 +1,9 @@
+{
+  "name": "@my-saas-suite/cli",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node src/index.ts"
+  }
+}

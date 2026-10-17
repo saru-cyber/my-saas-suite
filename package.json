@@ -1,0 +1,28 @@
+{
+  "name": "my-saas-suite",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "cli": "pnpm --filter @my-saas-suite/cli start"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devEngines": {
+    "packageManager": {
+      "name": "pnpm",
+      "version": "12.14.0",
+      "onFail": "download"
+    }
+  },
+  "packageManager": "pnpm@12.14.0",
+  "type": "module",
+  "devDependencies": {
+    "@types/node": "^26.6.5",
+    "turbo": "^2.5.8",
+    "typescript": "^7.0.2"
+  }
+}

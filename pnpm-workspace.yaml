@@ -1,0 +1,8 @@
+packages:
+  - 'hub'
+  - 'products/*'
+  - 'packages/*'
+allowBuilds:
+  '@parcel/watcher': true
+  '@swc/core': true
+  esbuild: false

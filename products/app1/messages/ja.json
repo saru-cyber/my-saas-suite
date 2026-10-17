@@ -1,0 +1,42 @@
+{
+  "metadata": {
+    "title": "App1"
+  },
+  "landing": {
+    "title": "App1",
+    "lead": "B2B チーム向けの業務アプリです。認証と契約は Suite Hub が担います。",
+    "cta": "ログイン / ダッシュボード",
+    "pricingTitle": "料金",
+    "pricingCta": "Pro を確認する",
+    "faqTitle": "FAQ",
+    "featureLoginTitle": "共通ログイン",
+    "featureLoginBody": "Suite のアカウントで App1 に入れます。",
+    "featurePlanTitle": "プラン管理",
+    "featurePlanBody": "契約中のプロダクトとプランを Hub で確認できます。",
+    "featureSetupTitle": "導入の速さ",
+    "featureSetupBody": "外部キーがなくても、ローカルで画面と導線を確認できます。",
+    "planFreeName": "Free",
+    "planFreePrice": "¥0",
+    "planFreeDetails": "機能の確認用",
+    "planProName": "Pro",
+    "planProPrice": "[要手動編集: 月額]",
+    "planProDetails": "App1 の有料プラン",
+    "faqLoginQuestion": "ログインはどこでしますか",
+    "faqLoginAnswer": "ダッシュボードを開くと、未ログインの場合は Hub のログイン画面へ移動します。",
+    "faqPriceQuestion": "料金はいつ決まりますか",
+    "faqPriceAnswer": "[要手動編集: 料金の確定時期]",
+    "faqCancelQuestion": "解約はできますか",
+    "faqCancelAnswer": "[要手動編集: 解約窓口]"
+  },
+  "dashboard": {
+    "title": "App1 ダッシュボード",
+    "userId": "ユーザーID",
+    "email": "メール",
+    "plan": "プラン",
+    "products": "利用中のプロダクト",
+    "back": "Hubに戻る"
+  },
+  "footer": {
+    "terms": "利用規約"
+  }
+}
