@@ -9,8 +9,8 @@
     "cli": "pnpm --filter @my-saas-suite/cli start"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "Masayuki Sarugaku",
+  "license": "MIT",
   "devEngines": {
     "packageManager": {
       "name": "pnpm",
