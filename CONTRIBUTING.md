@@ -1,6 +1,13 @@
 # Contributing
 
-Thanks for helping improve this B2B multi-SaaS starter. Issues, feature requests, and pull requests are welcome.
+Thanks for your interest in this B2B multi-SaaS starter! 
+
+**⚠️ Maintainer's Note (Maintenance Status)**
+This project is maintained by a solo developer primarily as a portfolio piece and a boilerplate template. Due to limited resources, **I cannot guarantee prompt reviews or merges for Pull Requests.** 
+
+You are highly encouraged to **Fork** this repository and customize it freely for your own projects!
+
+If you still wish to submit a PR, please understand that it may take a long time to review, or it may be closed if it falls outside the core vision of this boilerplate.
 
 Please write issues, requests, and pull request text in English.
 

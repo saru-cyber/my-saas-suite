@@ -105,4 +105,5 @@ MIT. Copyright (c) 2026 [Masayuki Sarugaku](https://github.com/saru-cyber).
 
 The terms page is a prototype. Have a qualified attorney review it before production use.
 
-Contributions are welcome. Read [CONTRIBUTING.md](./CONTRIBUTING.md) for Issues, feature requests, branch names, and Conventional Commits.
+Feel free to fork and build your own SaaS! 
+Please read [CONTRIBUTING.md](./CONTRIBUTING.md) for the maintenance status and guidelines before opening Issues or Pull Requests.
