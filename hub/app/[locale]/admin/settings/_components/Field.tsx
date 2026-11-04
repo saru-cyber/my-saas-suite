@@ -6,6 +6,9 @@ export const controlClassName =
 export const primaryButtonClassName =
   "inline-flex items-center rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground transition-colors duration-150 ease-out hover:bg-primary/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:bg-muted disabled:text-muted-foreground motion-reduce:transition-none";
 
+export const secondaryButtonClassName =
+  "inline-flex items-center rounded-md border border-border/40 bg-secondary px-3 py-2 text-sm font-medium text-secondary-foreground transition-colors duration-150 ease-out hover:bg-muted/80 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:cursor-not-allowed disabled:text-muted-foreground motion-reduce:transition-none";
+
 interface FieldProps {
   id: string;
   label: string;

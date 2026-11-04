@@ -335,6 +335,10 @@ export async function readAuthSettings(): Promise<AuthSettings> {
   return (await readSettings()).auth;
 }
 
+export async function readBillingSettings(): Promise<BillingSettings> {
+  return (await readSettings()).billing;
+}
+
 export async function readAppearanceSettings(): Promise<AppearanceSettings> {
   return (await readSettings()).appearance;
 }

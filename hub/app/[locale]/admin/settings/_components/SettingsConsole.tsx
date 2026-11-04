@@ -1,30 +1,50 @@
 "use client";
 
-import { CreditCard, KeyRound, Palette } from "lucide-react";
+import { CreditCard, FlaskConical, KeyRound, Package, Palette, Tags, type LucideIcon } from "lucide-react";
 import { useCallback, useState, type KeyboardEvent } from "react";
 import { useTranslations } from "next-intl";
+import type { AbTestEventView } from "../../../../../src/commerce/report";
+import type { AbTest, PricingConfiguration, ProductBundle } from "../../../../../src/commerce/store";
 import type { AppearanceSettings } from "../../../../../src/settings/appearance";
 import type { AuthSettingsView, BillingSettingsView } from "../../../../../src/settings/store";
 import { Link } from "../../../../../i18n/navigation";
 import { AppearanceSettingsTab } from "./AppearanceSettingsTab";
 import { AuthSettingsTab } from "./AuthSettingsTab";
 import { BillingSettingsTab } from "./BillingSettingsTab";
+import { BundleSettingsTab } from "./BundleSettingsTab";
+import { ExperimentSettingsTab } from "./ExperimentSettingsTab";
+import { PricingSettingsTab } from "./PricingSettingsTab";
 import { Toast } from "./Toast";
 
-type SettingsTab = "auth" | "billing" | "appearance";
+type SettingsTab = "auth" | "billing" | "pricing" | "bundles" | "experiments" | "appearance";
 
-const TABS: readonly SettingsTab[] = ["auth", "billing", "appearance"];
+const TABS: readonly SettingsTab[] = ["auth", "billing", "pricing", "bundles", "experiments", "appearance"];
+
+const TAB_ICONS: Record<SettingsTab, LucideIcon> = {
+  auth: KeyRound,
+  billing: CreditCard,
+  pricing: Tags,
+  bundles: Package,
+  experiments: FlaskConical,
+  appearance: Palette,
+};
 
 interface SettingsConsoleProps {
   auth: AuthSettingsView;
   billing: BillingSettingsView;
   appearance: AppearanceSettings;
   callbackUrl: string;
+  products: readonly string[];
+  pricing: PricingConfiguration[];
+  bundles: ProductBundle[];
+  tests: AbTest[];
+  events: AbTestEventView[];
 }
 
-export function SettingsConsole({ auth, billing, appearance, callbackUrl }: SettingsConsoleProps) {
+export function SettingsConsole({ auth, billing, appearance, callbackUrl, products, pricing, bundles, tests, events }: SettingsConsoleProps) {
   const t = useTranslations("admin");
   const [tab, setTab] = useState<SettingsTab>("auth");
+  const [bundleList, setBundleList] = useState(bundles);
   const [toast, setToast] = useState<string | null>(null);
   const dismissToast = useCallback(() => setToast(null), []);
 
@@ -61,7 +81,7 @@ export function SettingsConsole({ auth, billing, appearance, callbackUrl }: Sett
         >
           {TABS.map((item) => {
             const selected = tab === item;
-            const Icon = item === "auth" ? KeyRound : item === "billing" ? CreditCard : Palette;
+            const Icon = TAB_ICONS[item];
             return (
               <button
                 key={item}
@@ -90,6 +110,21 @@ export function SettingsConsole({ auth, billing, appearance, callbackUrl }: Sett
           </div>
           <div id="settings-panel-billing" role="tabpanel" aria-labelledby="settings-tab-billing" hidden={tab !== "billing"}>
             <BillingSettingsTab initial={billing} onToast={setToast} />
+          </div>
+          <div id="settings-panel-pricing" role="tabpanel" aria-labelledby="settings-tab-pricing" hidden={tab !== "pricing"}>
+            <PricingSettingsTab products={products} initial={pricing} onToast={setToast} />
+          </div>
+          <div id="settings-panel-bundles" role="tabpanel" aria-labelledby="settings-tab-bundles" hidden={tab !== "bundles"}>
+            <BundleSettingsTab
+              products={products}
+              initialBundles={bundles}
+              initialPricing={pricing}
+              onBundlesChange={setBundleList}
+              onToast={setToast}
+            />
+          </div>
+          <div id="settings-panel-experiments" role="tabpanel" aria-labelledby="settings-tab-experiments" hidden={tab !== "experiments"}>
+            <ExperimentSettingsTab products={products} bundles={bundleList} initialTests={tests} initialEvents={events} onToast={setToast} />
           </div>
           <div
             id="settings-panel-appearance"

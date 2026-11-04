@@ -1,12 +1,17 @@
 import { NextResponse } from "next/server";
 import type Stripe from "stripe";
 import {
+  claimCompletedSession,
+  fulfillPurchase,
+  readPurchaseIntent,
+  releaseCompletedSession,
+} from "../../../../src/billing/fulfillment";
+import {
   DUMMY_STRIPE_WEBHOOK_SECRET,
   getStripeClient,
   isStripeMockMode,
-  readPurchaseMetadata,
 } from "../../../../src/billing/stripe";
-import { grantProductAccess } from "../../../../src/db/users";
+import { recordAbTestEvent } from "../../../../src/commerce/store";
 
 export const runtime = "nodejs";
 
@@ -47,7 +52,8 @@ export async function POST(request: Request): Promise<NextResponse<WebhookSucces
     return NextResponse.json({ ok: true, ignored: true });
   }
 
-  const purchase = readPurchaseMetadata(event.data.object);
+  const session = event.data.object;
+  const purchase = readPurchaseIntent(session);
   if (!purchase) {
     return NextResponse.json(
       { ok: false, message: "Checkoutのmetadataが不足しています" },
@@ -55,15 +61,29 @@ export async function POST(request: Request): Promise<NextResponse<WebhookSucces
     );
   }
 
-  const user = grantProductAccess(purchase.userId, purchase.targetProduct);
-  if (!user) {
-    return NextResponse.json({ ok: false, message: "ユーザーが見つかりません" }, { status: 404 });
+  const firstDelivery = claimCompletedSession(session.id);
+  const fulfilled = await fulfillPurchase(purchase);
+  if (!fulfilled.ok) {
+    if (firstDelivery) {
+      releaseCompletedSession(session.id);
+    }
+    return NextResponse.json({ ok: false, message: fulfilled.message }, { status: fulfilled.status });
+  }
+
+  if (firstDelivery && purchase.abTestId && purchase.variant) {
+    await recordAbTestEvent({
+      testId: purchase.abTestId,
+      userId: purchase.userId,
+      variant: purchase.variant,
+      eventType: "conversion",
+      amountCents: session.amount_total,
+    });
   }
 
   return NextResponse.json({
     ok: true,
-    userId: user.id,
-    activeProducts: user.activeProducts,
-    plan: user.plan,
+    userId: fulfilled.user.id,
+    activeProducts: fulfilled.user.activeProducts,
+    plan: fulfilled.user.plan,
   });
 }

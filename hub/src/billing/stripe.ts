@@ -67,6 +67,40 @@ export function readPurchaseMetadata(
   return { userId, targetProduct };
 }
 
+export interface SubscriptionCheckoutInput {
+  email: string;
+  userId: string;
+  targetId: string;
+  entityType: "product" | "bundle";
+  stripePriceId: string;
+  trialDays: number;
+  abTestId: string | null;
+  variant: "A" | "B" | null;
+  successUrl: string;
+  cancelUrl: string;
+}
+
+export async function createSubscriptionCheckoutUrl(input: SubscriptionCheckoutInput): Promise<string | null> {
+  const stripe = getStripeClient();
+  const session = await stripe.checkout.sessions.create({
+    mode: "subscription",
+    customer_email: input.email,
+    client_reference_id: input.userId,
+    success_url: input.successUrl,
+    cancel_url: input.cancelUrl,
+    metadata: {
+      entity_type: input.entityType,
+      target_id: input.targetId,
+      ab_test_id: input.abTestId ?? "",
+      ab_variant: input.variant ?? "",
+      user_id: input.userId,
+    },
+    line_items: [{ price: input.stripePriceId, quantity: 1 }],
+    ...(input.trialDays > 0 ? { subscription_data: { trial_period_days: input.trialDays } } : {}),
+  });
+  return session.url;
+}
+
 export async function createStripeCheckoutUrl(input: CheckoutInput & { email: string }): Promise<string | null> {
   const stripe = getStripeClient();
   const hubUrl = process.env.NEXT_PUBLIC_HUB_URL ?? "http://localhost:3000";

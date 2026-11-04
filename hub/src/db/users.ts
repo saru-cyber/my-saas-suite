@@ -67,17 +67,25 @@ export function registerUser(email: string, password: string): UserResult {
   return { ok: true, user: toPublicUser(user) };
 }
 
-export function grantProductAccess(userId: string, productId: string): PublicUser | null {
+export function grantProducts(userId: string, productIds: readonly string[]): PublicUser | null {
   const user = usersById.get(userId);
   if (!user) {
     return null;
   }
 
-  if (!user.activeProducts.includes(productId)) {
-    user.activeProducts = [...user.activeProducts, productId];
+  const next = new Set(user.activeProducts);
+  for (const productId of productIds) {
+    if (productId.length > 0) {
+      next.add(productId);
+    }
   }
+  user.activeProducts = [...next];
   user.plan = "pro";
   return toPublicUser(user);
+}
+
+export function grantProductAccess(userId: string, productId: string): PublicUser | null {
+  return grantProducts(userId, [productId]);
 }
 
 export function authenticateUser(email: string, password: string): PublicUser | null {

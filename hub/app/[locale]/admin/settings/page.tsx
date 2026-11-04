@@ -3,6 +3,8 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import { routing } from "../../../../i18n/routing";
+import { listAbTestEvents, listAbTests, listPricingConfigurations, listProductBundles } from "../../../../src/commerce/store";
+import { suiteProducts } from "../../../../src/products/catalog";
 import { readSettings, toAuthView, toBillingView } from "../../../../src/settings/store";
 import { SettingsConsole } from "./_components/SettingsConsole";
 
@@ -34,7 +36,14 @@ export default async function AdminSettingsPage({ params }: { params: Promise<{ 
   }
   setRequestLocale(locale);
 
-  const [settings, headerList] = await Promise.all([readSettings(), headers()]);
+  const [settings, headerList, pricing, bundles, tests, events] = await Promise.all([
+    readSettings(),
+    headers(),
+    listPricingConfigurations(),
+    listProductBundles(),
+    listAbTests(),
+    listAbTestEvents(),
+  ]);
   const callbackUrl = `${callbackOrigin(headerList)}/api/auth/google/callback`;
 
   return (
@@ -43,6 +52,11 @@ export default async function AdminSettingsPage({ params }: { params: Promise<{ 
       billing={toBillingView(settings.billing)}
       appearance={settings.appearance}
       callbackUrl={callbackUrl}
+      products={suiteProducts.map((product) => product.id)}
+      pricing={pricing}
+      bundles={bundles}
+      tests={tests}
+      events={events.map((event) => ({ ...event, createdAt: event.createdAt.toISOString() }))}
     />
   );
 }
