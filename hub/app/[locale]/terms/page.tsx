@@ -31,10 +31,10 @@ export default async function TermsPage({ params }: { params: Promise<{ locale: 
 
   return (
     <main className="min-h-screen p-8">
-      <article className="mx-auto max-w-2xl border border-gray-200 bg-white p-6">
-        <p className="border border-gray-200 bg-gray-50 p-3 text-sm">{t("disclaimer")}</p>
+      <article className="mx-auto max-w-2xl border border-border/40 bg-card p-6">
+        <p className="border border-border/40 bg-muted/40 p-3 text-sm">{t("disclaimer")}</p>
         <h1 className="mt-6 text-xl">{t("title", { suiteName: suiteSite.suiteName })}</h1>
-        <section className="mt-6 border border-gray-200 p-3 text-sm">
+        <section className="mt-6 border border-border/40 p-3 text-sm">
           <h2 className="text-base">{t("businessHeading")}</h2>
           <dl className="mt-2 flex flex-col gap-1">
             <div>{t("businessName")}</div>

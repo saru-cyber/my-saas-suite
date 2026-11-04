@@ -19,7 +19,108 @@
     "redirectMissing": "Redirect URL was not returned",
     "invalidCredentials": "Email or password is incorrect",
     "emailTaken": "This email is already registered",
-    "invalidInput": "Enter a valid email and a password of 8 to 72 characters"
+    "invalidInput": "Enter a valid email and a password of 8 to 72 characters",
+    "dashboard": "Account",
+    "settings": "Settings"
+  },
+  "dashboard": {
+    "metaTitle": "Account",
+    "manageBilling": "Manage billing",
+    "portalMock": "Stripe is in mock mode. Billing changes are not sent to Stripe. The plan on this page is the source of truth.",
+    "portalUnavailable": "This account is not linked to a Stripe customer, so the billing portal could not be opened.",
+    "metrics": {
+      "heading": "Account status",
+      "planLabel": "Current plan",
+      "active": "Active",
+      "inactive": "Inactive",
+      "renewalNone": "No renewal is scheduled on the free plan.",
+      "renewalPending": "The next renewal date appears after billing syncs from Stripe.",
+      "productsLabel": "Active products",
+      "productsEmpty": "No products yet",
+      "securityLabel": "Security",
+      "authEmail": "Email",
+      "sessionActive": "suite_session SSO is active",
+      "sessionBadge": "Active"
+    },
+    "adminSettings": "Settings",
+    "products": {
+      "heading": "Products",
+      "lead": "Open a product included in your account. Products you have not subscribed to stay listed here.",
+      "launch": "Launch",
+      "upsell": "Not subscribed",
+      "launchUnavailable": "No launch URL",
+      "unknownDescription": "This product does not have a description yet.",
+      "items": {
+        "app1": {
+          "name": "App1",
+          "description": "The first Suite product. Sign-in and billing stay on Hub."
+        }
+      }
+    },
+    "plans": {
+      "free": "Free",
+      "pro": "Pro"
+    }
+  },
+  "admin": {
+    "metaTitle": "Settings",
+    "title": "Settings",
+    "lead": "Manage authentication, billing, and appearance without editing environment files.",
+    "back": "Back to account",
+    "save": "Save",
+    "saving": "Saving",
+    "saved": "Settings saved",
+    "saveFailed": "Could not save settings",
+    "forbidden": "You do not have access to these settings",
+    "invalid": "Check the values and try again",
+    "invalidTtl": "Enter a whole number of hours from 1 to 720",
+    "invalidColor": "Enter a hex color such as #4F46E5",
+    "invalidUrl": "Enter an http or https logo URL",
+    "copy": "Copy",
+    "copied": "Copied",
+    "copyFailed": "Could not copy",
+    "callbackLabel": "Callback URL",
+    "callbackHint": "Register this URL in the Google Cloud console.",
+    "clientId": "Google client ID",
+    "clientSecret": "Google client secret",
+    "secretConfigured": "Saved value: {mask}",
+    "secretEmpty": "Nothing is saved yet. An environment variable is used when one exists.",
+    "secretPlaceholder": "Leave blank to keep the current value",
+    "sessionTtl": "Session lifetime (hours)",
+    "sessionTtlHint": "Applies the next time someone signs in. Use 1 to 720 hours.",
+    "authLead": "Google OAuth credentials and the shared SSO session lifetime.",
+    "billingLead": "Stripe keys, mode, and the price or pricing table IDs bound to checkout.",
+    "billingMode": "Mode",
+    "runtimeMockHint": "Dummy keys keep checkout in mock mode even if another mode is selected.",
+    "publishableKey": "Publishable key",
+    "secretKey": "Secret key",
+    "webhookSecret": "Webhook secret",
+    "monthlyPriceId": "Monthly price ID",
+    "yearlyPriceId": "Yearly price ID",
+    "pricingTableId": "Pricing table ID",
+    "appearanceLead": "Brand color, logo, and the default theme. The accent color follows the primary token.",
+    "primaryColor": "Brand color",
+    "primaryColorHint": "Hex color. Saving applies it to the primary accent without leaving this page.",
+    "resetColor": "Use the preset color",
+    "logoUrl": "Logo URL",
+    "logoHint": "An http or https image URL. Leave blank to hide the logo.",
+    "preview": "Preview",
+    "theme": "Default theme",
+    "tabs": {
+      "auth": "Authentication",
+      "billing": "Billing",
+      "appearance": "Appearance"
+    },
+    "modes": {
+      "mock": "Mock",
+      "test": "Test",
+      "live": "Live"
+    },
+    "themes": {
+      "system": "System",
+      "light": "Light",
+      "dark": "Dark"
+    }
   },
   "terms": {
     "disclaimer": "⚠️ This document is a prototype reference. A legal review by a qualified attorney is required before production use.",

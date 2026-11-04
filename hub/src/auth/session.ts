@@ -1,6 +1,6 @@
 import { parseCookie, stringifySetCookie } from "cookie";
 import jwt from "jsonwebtoken";
-import { isSuiteSessionClaims, type SuiteSessionClaims } from "./claims";
+import { isSuiteSessionClaims, roleFromClaims, type SuiteSessionClaims } from "./claims";
 
 export const SESSION_COOKIE_NAME = "suite_session";
 
@@ -14,10 +14,10 @@ function readJwtSecret(): string {
   return secret;
 }
 
-export function signSession(claims: SuiteSessionClaims): string {
+export function signSession(claims: SuiteSessionClaims, expiresInSeconds = WEEK_SECONDS): string {
   return jwt.sign(claims, readJwtSecret(), {
     algorithm: "HS256",
-    expiresIn: "7d",
+    expiresIn: expiresInSeconds,
   });
 }
 
@@ -32,6 +32,7 @@ export function verifySession(token: string): SuiteSessionClaims | null {
       email: decoded.email,
       activeProducts: decoded.activeProducts,
       plan: decoded.plan,
+      role: roleFromClaims(decoded.role),
     };
   } catch {
     return null;
@@ -52,7 +53,7 @@ export function readSessionFromRequest(request: Request): SuiteSessionClaims | n
   return verifySession(token);
 }
 
-export function buildSessionCookie(token: string): string {
+export function buildSessionCookie(token: string, maxAge = WEEK_SECONDS): string {
   const domain = process.env.COOKIE_DOMAIN ?? "localhost";
 
   return stringifySetCookie({
@@ -61,7 +62,7 @@ export function buildSessionCookie(token: string): string {
     httpOnly: true,
     sameSite: "lax",
     path: "/",
-    maxAge: WEEK_SECONDS,
+    maxAge,
     // Browsers drop Domain=localhost. Production uses COOKIE_DOMAIN like .your-suite.com.
     ...(domain === "localhost" ? {} : { domain }),
   });

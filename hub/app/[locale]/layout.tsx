@@ -4,6 +4,9 @@ import { notFound } from "next/navigation";
 import type { ReactNode } from "react";
 import { LocaleSwitcher } from "../../components/LocaleSwitcher";
 import { routing } from "../../i18n/routing";
+import { appearanceDocumentProps } from "../../src/settings/appearance";
+import { isHttpLogoUrl, readAppearanceSettings } from "../../src/settings/store";
+import { suiteSite } from "../../src/site";
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -32,18 +35,21 @@ export default async function LocaleLayout({
   }
 
   setRequestLocale(locale);
-  const messages = await getMessages();
+  const [messages, appearance] = await Promise.all([getMessages(), readAppearanceSettings()]);
+  const theme = appearanceDocumentProps(appearance);
+  const showLogo = appearance.logoUrl.length > 0 && isHttpLogoUrl(appearance.logoUrl);
 
   return (
-    <html lang={locale}>
-      <body>
+    <html lang={locale} className={theme.className} style={theme.style}>
+      <body className="min-h-screen bg-background text-foreground antialiased">
         <NextIntlClientProvider locale={locale} messages={messages}>
-          <div className="bg-gray-50">
-            <div className="px-8 pt-4">
-              <LocaleSwitcher />
-            </div>
-            {children}
+          <div className={`flex items-center gap-4 px-6 pt-4 md:px-8 ${showLogo ? "justify-between" : "justify-end"}`}>
+            {showLogo ? (
+              <img src={appearance.logoUrl} alt={suiteSite.suiteName} className="h-8 max-w-40 object-contain" />
+            ) : null}
+            <LocaleSwitcher />
           </div>
+          {children}
         </NextIntlClientProvider>
       </body>
     </html>

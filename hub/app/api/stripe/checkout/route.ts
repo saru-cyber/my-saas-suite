@@ -8,6 +8,7 @@ import {
   parseCheckoutInput,
 } from "../../../../src/billing/stripe";
 import { grantProductAccess } from "../../../../src/db/users";
+import { readAuthSettings, sessionTtlSeconds } from "../../../../src/settings/store";
 
 export const runtime = "nodejs";
 
@@ -58,11 +59,14 @@ export async function POST(request: Request): Promise<NextResponse<CheckoutSucce
       email: user.email,
       activeProducts: user.activeProducts,
       plan: user.plan,
+      role: user.role,
     };
 
     let token: string;
+    let maxAge = 60 * 60 * 24 * 7;
     try {
-      token = signSession(claims);
+      maxAge = sessionTtlSeconds(await readAuthSettings());
+      token = signSession(claims, maxAge);
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : "JWTの発行に失敗しました";
       return errorResponse(message, 500);
@@ -73,7 +77,7 @@ export async function POST(request: Request): Promise<NextResponse<CheckoutSucce
       mock: true,
       url: MOCK_CHECKOUT_SUCCESS_URL,
     });
-    response.headers.append("Set-Cookie", buildSessionCookie(token));
+    response.headers.append("Set-Cookie", buildSessionCookie(token, maxAge));
     return response;
   }
 

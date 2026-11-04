@@ -19,7 +19,108 @@
     "redirectMissing": "リダイレクト先を取得できませんでした",
     "invalidCredentials": "メールアドレスまたはパスワードが違います",
     "emailTaken": "このメールアドレスは登録済みです",
-    "invalidInput": "メールアドレスと、8文字以上72文字以内のパスワードを入力してください"
+    "invalidInput": "メールアドレスと、8文字以上72文字以内のパスワードを入力してください",
+    "dashboard": "マイページ",
+    "settings": "管理設定"
+  },
+  "dashboard": {
+    "metaTitle": "マイページ",
+    "manageBilling": "決済・契約の管理",
+    "portalMock": "現在は Stripe モックモードです。請求の変更は Stripe に送信されません。プランと契約状態はこのページが基準です。",
+    "portalUnavailable": "このアカウントに紐づく Stripe 顧客がないため、請求ポータルを開けませんでした。",
+    "metrics": {
+      "heading": "アカウントの状態",
+      "planLabel": "現在のプラン",
+      "active": "有効",
+      "inactive": "無効",
+      "renewalNone": "無料プランのため、次回の更新予定はありません。",
+      "renewalPending": "次回更新日は、Stripe の請求情報を同期すると表示されます。",
+      "productsLabel": "利用中プロダクト",
+      "productsEmpty": "利用中のプロダクトはありません",
+      "securityLabel": "認証・セキュリティ",
+      "authEmail": "メール認証",
+      "sessionActive": "suite_session による SSO は有効です",
+      "sessionBadge": "有効"
+    },
+    "adminSettings": "管理設定",
+    "products": {
+      "heading": "利用可能プロダクト",
+      "lead": "契約中のプロダクトを開けます。未契約のプロダクトもここに表示されます。",
+      "launch": "開く",
+      "upsell": "未契約",
+      "launchUnavailable": "起動先が未設定です",
+      "unknownDescription": "このプロダクトの説明はまだ登録されていません。",
+      "items": {
+        "app1": {
+          "name": "App1",
+          "description": "Suite の最初のプロダクトです。認証と請求は Hub で管理します。"
+        }
+      }
+    },
+    "plans": {
+      "free": "無料",
+      "pro": "Pro"
+    }
+  },
+  "admin": {
+    "metaTitle": "管理設定",
+    "title": "管理設定",
+    "lead": "環境変数を書き換えずに、認証・決済・外観をここから変更します。",
+    "back": "マイページへ戻る",
+    "save": "保存",
+    "saving": "保存しています",
+    "saved": "設定を保存しました",
+    "saveFailed": "設定を保存できませんでした",
+    "forbidden": "この設定を変更する権限がありません",
+    "invalid": "入力内容を確認して、もう一度保存してください",
+    "invalidTtl": "セッション有効期限は 1 から 720 の整数時間で入力してください",
+    "invalidColor": "ブランドカラーは #4F46E5 のような16進数で入力してください",
+    "invalidUrl": "ロゴ URL は http または https で入力してください",
+    "copy": "コピー",
+    "copied": "コピーしました",
+    "copyFailed": "コピーできませんでした",
+    "callbackLabel": "コールバック URL",
+    "callbackHint": "Google Cloud コンソールにこの URL を登録します。",
+    "clientId": "Google クライアント ID",
+    "clientSecret": "Google クライアントシークレット",
+    "secretConfigured": "保存済み: {mask}",
+    "secretEmpty": "まだ保存されていません。環境変数がある場合はそちらを使います。",
+    "secretPlaceholder": "空のままなら現在の値を維持します",
+    "sessionTtl": "セッション有効期限（時間）",
+    "sessionTtlHint": "次にログインしたときから適用されます。1 から 720 時間です。",
+    "authLead": "Google OAuth の資格情報と、共有 SSO セッションの有効期限です。",
+    "billingLead": "Stripe のキー、モード、月額・年額と Pricing Table の ID です。",
+    "billingMode": "モード",
+    "runtimeMockHint": "ダミーキーの間は、別のモードを選んでもチェックアウトはモックのままです。",
+    "publishableKey": "公開可能キー",
+    "secretKey": "シークレットキー",
+    "webhookSecret": "Webhook シークレット",
+    "monthlyPriceId": "月額 Price ID",
+    "yearlyPriceId": "年額 Price ID",
+    "pricingTableId": "Pricing Table ID",
+    "appearanceLead": "ブランドカラー、ロゴ、既定のテーマです。アクセントは primary トークンに追従します。",
+    "primaryColor": "ブランドカラー",
+    "primaryColorHint": "16進数の色です。保存すると、このページのまま primary に反映されます。",
+    "resetColor": "プリセットカラーに戻す",
+    "logoUrl": "ロゴ URL",
+    "logoHint": "http または https の画像 URL です。空にするとロゴは表示しません。",
+    "preview": "プレビュー",
+    "theme": "既定のテーマ",
+    "tabs": {
+      "auth": "認証",
+      "billing": "決済",
+      "appearance": "外観"
+    },
+    "modes": {
+      "mock": "モック",
+      "test": "テスト",
+      "live": "ライブ"
+    },
+    "themes": {
+      "system": "システム",
+      "light": "ライト",
+      "dark": "ダーク"
+    }
   },
   "terms": {
     "disclaimer": "⚠️ 本ドキュメントはプロトタイプ用の参考資料であり、本番運用時は弁護士等の専門家によるリーガルチェックが必要です。",

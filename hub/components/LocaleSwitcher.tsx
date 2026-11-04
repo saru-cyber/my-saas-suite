@@ -8,12 +8,20 @@ export function LocaleSwitcher() {
   const locale = useLocale();
 
   return (
-    <p className="text-sm">
-      <Link href={pathname} locale="en" className={locale === "en" ? "underline" : undefined}>
+    <p className="text-sm text-muted-foreground">
+      <Link
+        href={pathname}
+        locale="en"
+        className={locale === "en" ? "text-foreground underline" : "hover:text-foreground"}
+      >
         EN
       </Link>
       {" | "}
-      <Link href={pathname} locale="ja" className={locale === "ja" ? "underline" : undefined}>
+      <Link
+        href={pathname}
+        locale="ja"
+        className={locale === "ja" ? "text-foreground underline" : "hover:text-foreground"}
+      >
         JA
       </Link>
     </p>

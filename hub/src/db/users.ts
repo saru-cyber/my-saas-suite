@@ -7,6 +7,7 @@ export interface PublicUser {
   email: string;
   activeProducts: string[];
   plan: string;
+  role: "admin" | "member";
   createdAt: Date;
 }
 
@@ -23,6 +24,7 @@ function toPublicUser(user: User): PublicUser {
     email: user.email,
     activeProducts: user.activeProducts,
     plan: user.plan,
+    role: user.role,
     createdAt: user.createdAt,
   };
 }
@@ -40,6 +42,7 @@ function seedDemoUser(): void {
     passwordHash: hashPassword("password"),
     activeProducts: [],
     plan: "free",
+    role: "admin",
     createdAt: new Date("2026-01-01T00:00:00.000Z"),
   });
 }
@@ -57,6 +60,7 @@ export function registerUser(email: string, password: string): UserResult {
     passwordHash: hashPassword(password),
     activeProducts: [],
     plan: "free",
+    role: "member",
     createdAt: new Date(),
   };
   remember(user);

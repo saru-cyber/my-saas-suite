@@ -2,12 +2,14 @@
 
 import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
+import { Link } from "../../i18n/navigation";
 
 interface AuthUser {
   userId: string;
   email: string;
   plan: string;
   activeProducts: string[];
+  role: "admin" | "member";
 }
 
 type Status =
@@ -40,6 +42,7 @@ function readUser(value: unknown): AuthUser | null {
     email: record.email,
     plan: record.plan,
     activeProducts,
+    role: record.role === "admin" ? "admin" : "member",
   };
 }
 
@@ -167,14 +170,14 @@ export default function HomePage() {
 
   return (
     <main className="min-h-screen p-8">
-      <section className="mx-auto max-w-md border border-gray-200 bg-white p-6">
+      <section className="mx-auto max-w-md border border-border/40 bg-card p-6">
         <h1 className="text-xl">{t("title")}</h1>
         <p className="mt-2 text-sm">{t("subtitle")}</p>
         <form className="mt-4 flex flex-col gap-3" onSubmit={(event) => event.preventDefault()}>
           <label className="flex flex-col gap-1 text-sm">
             {t("email")}
             <input
-              className="border border-gray-200 p-2"
+              className="border border-border/40 bg-background p-2 text-foreground"
               type="email"
               autoComplete="username"
               value={email}
@@ -184,7 +187,7 @@ export default function HomePage() {
           <label className="flex flex-col gap-1 text-sm">
             {t("password")}
             <input
-              className="border border-gray-200 p-2"
+              className="border border-border/40 bg-background p-2 text-foreground"
               type="password"
               autoComplete="current-password"
               value={password}
@@ -193,7 +196,7 @@ export default function HomePage() {
           </label>
           <div className="flex gap-2">
             <button
-              className="border border-gray-200 px-3 py-2 text-sm"
+              className="border border-border/40 bg-secondary px-3 py-2 text-sm text-secondary-foreground"
               type="button"
               disabled={pending}
               onClick={() => {
@@ -203,7 +206,7 @@ export default function HomePage() {
               {t("register")}
             </button>
             <button
-              className="border border-gray-200 px-3 py-2 text-sm"
+              className="border border-border/40 bg-secondary px-3 py-2 text-sm text-secondary-foreground"
               type="button"
               disabled={pending}
               onClick={() => {
@@ -215,7 +218,7 @@ export default function HomePage() {
           </div>
         </form>
         {sessionUser ? (
-          <div className="mt-4 border border-gray-200 p-3">
+          <div className="mt-4 border border-border/40 p-3">
             <p className="text-sm">
               {t("account", {
                 email: sessionUser.email,
@@ -223,20 +226,36 @@ export default function HomePage() {
                 products,
               })}
             </p>
-            <button
-              className="mt-3 border border-gray-200 px-3 py-2 text-sm"
-              type="button"
-              disabled={pending}
-              onClick={() => {
-                void purchaseApp1();
-              }}
-            >
-              {t("purchase")}
-            </button>
+            <div className="mt-3 flex flex-wrap gap-2">
+              <Link
+                className="inline-flex items-center border border-border/40 bg-primary px-3 py-2 text-sm font-medium text-primary-foreground"
+                href="/dashboard"
+              >
+                {t("dashboard")}
+              </Link>
+              {sessionUser.role === "admin" ? (
+                <Link
+                  className="inline-flex items-center border border-border/40 bg-secondary px-3 py-2 text-sm text-secondary-foreground"
+                  href="/admin/settings"
+                >
+                  {t("settings")}
+                </Link>
+              ) : null}
+              <button
+                className="border border-border/40 bg-secondary px-3 py-2 text-sm text-secondary-foreground"
+                type="button"
+                disabled={pending}
+                onClick={() => {
+                  void purchaseApp1();
+                }}
+              >
+                {t("purchase")}
+              </button>
+            </div>
           </div>
         ) : null}
         {status.kind !== "idle" ? (
-          <p className="mt-4 border border-gray-200 p-2 text-sm">{status.text}</p>
+          <p className="mt-4 border border-border/40 bg-muted/40 p-2 text-sm">{status.text}</p>
         ) : null}
       </section>
     </main>
