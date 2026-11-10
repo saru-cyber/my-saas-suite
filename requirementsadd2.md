@@ -1,7 +1,3 @@
-ご指定の要望（FAQのアコーディオン、導入事例のモーダル、Cursorでダミー文言を差し替えるだけの運用形式）をすべて盛り込んだ追加要件定義書（共通LPプリセット ＆ 共通フッター基盤）です。
-
----
-
 # 追加要件定義書：共通LPプリセットおよび共通フッター基盤（requirementsadd2.md）
 
 ## 1. 概要・目的
@@ -153,7 +149,7 @@ products/[app-name]/
 
 ### 4.2 コンテンツ定義構造（`config/lp-content.ts` ダミー雛形）
 
-Cursorに「このアプリの概要に合わせて `lp-content.ts` の文言を書き換えて」と指示するだけで済むよう、型安全なダミーデータを用意する。
+Cursorに「このアプリの概要に合わせて `lp-content.ts` の文言を書き換えて」と指示するだけで済むよう、型安全なダミーデータを用意する。型定義の正本は `packages/ui/src/landing/types.ts`（`@my-saas-suite/ui/landing` から import）で、以下はその要約である。
 
 ```typescript
 export interface LPContent {
@@ -178,10 +174,25 @@ export interface LPContent {
     author: string;
   }>;
   pricing: {
-    singlePlan: { name: string; price: string; features: string[] };
-    bundlePlan: { name: string; price: string; features: string[] };
+    singlePlan: LPPricingPlan;
+    bundlePlan: LPPricingPlan;
   };
   faqs: Array<{ question: string; answer: string }>;
+  closingCta: {
+    title: string;
+    subtitle: string;
+    buttonLabel: string;
+    buttonHref?: string;
+  };
+}
+
+export interface LPPricingPlan {
+  name: string;
+  price: string; // 表示用に整形済みの価格（例: "¥4,980" / "$39"）
+  period?: string; // 課金周期の接尾辞（例: "/ 月" / "/ month"）
+  features: string[];
+  ctaLabel?: string;
+  ctaHref?: string;
 }
 
 ```
