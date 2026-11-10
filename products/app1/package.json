@@ -13,6 +13,7 @@
   "license": "MIT",
   "type": "module",
   "dependencies": {
+    "@my-saas-suite/ui": "workspace:*",
     "@next/third-parties": "16.4.2",
     "clsx": "^2.1.1",
     "cookie": "^2.0.1",

@@ -16,7 +16,7 @@ export default async function DashboardPage({ params }: { params: Promise<{ loca
   const token = cookieStore.get(SESSION_COOKIE_NAME)?.value;
   const claims = token ? await verifySessionToken(token) : null;
   if (!claims || !hasProductAccess(claims)) {
-    redirect(`${hubUrl()}/${locale}`);
+    redirect(`${hubUrl()}/${locale}/login`);
   }
 
   return (

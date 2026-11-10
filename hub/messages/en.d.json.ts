@@ -218,6 +218,14 @@ declare const messages: {
     "cancellationBody": "[EDIT_REQUIRED: cancellation terms and contract term]",
     "lawHeading": "8. Governing law",
     "lawBody": "[EDIT_REQUIRED: governing law and venue]"
+  },
+  "merchant": {
+    "title": "Specified Commercial Transactions Act Disclosure",
+    "comingSoon": "This page is being prepared. The required disclosures will be published here before launch."
+  },
+  "privacy": {
+    "title": "Privacy Policy",
+    "comingSoon": "This page is being prepared. Our privacy policy will be published here before launch."
   }
 };
 export default messages;

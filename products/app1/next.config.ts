@@ -10,6 +10,7 @@ const withNextIntl = createNextIntlPlugin({
 
 const nextConfig: NextConfig = {
   agentRules: false,
+  transpilePackages: ["@my-saas-suite/ui"],
 };
 
 export default withNextIntl(nextConfig);

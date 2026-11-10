@@ -21,7 +21,7 @@ export async function GET(request: Request): Promise<NextResponse> {
   const session = readSessionFromRequest(request);
 
   if (!session) {
-    return NextResponse.redirect(new URL(`/${locale}`, requestUrl.origin));
+    return NextResponse.redirect(new URL(`/${locale}/login`, requestUrl.origin));
   }
 
   if (isStripeMockMode()) {

@@ -1,9 +1,11 @@
 export interface ProductSite {
+  productName: string;
   companyName: string;
   suiteName: string;
 }
 
 export const productSite: ProductSite = {
+  productName: "App1",
   companyName: "Your Company",
   suiteName: "Suite",
 };

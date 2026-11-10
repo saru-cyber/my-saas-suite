@@ -25,7 +25,7 @@ export default async function AdminLayout({
   const token = cookieStore.get(SESSION_COOKIE_NAME)?.value;
   const session = token ? verifySession(token) : null;
   if (!session) {
-    redirect(`/${locale}`);
+    redirect(`/${locale}/login`);
   }
   if (session.role !== "admin") {
     redirect(`/${locale}/dashboard`);

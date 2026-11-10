@@ -52,7 +52,7 @@ export default async function DashboardPage({ params, searchParams }: DashboardP
   const token = cookieStore.get(SESSION_COOKIE_NAME)?.value;
   const claims = token ? verifySession(token) : null;
   if (!claims) {
-    redirect(`/${locale}`);
+    redirect(`/${locale}/login`);
   }
 
   const t = await getTranslations("dashboard");

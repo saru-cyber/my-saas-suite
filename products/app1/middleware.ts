@@ -23,7 +23,7 @@ export default async function middleware(request: NextRequest): Promise<NextResp
   const token = request.cookies.get(SESSION_COOKIE_NAME)?.value;
   const claims = token ? await verifySessionToken(token) : null;
   if (!claims || !hasProductAccess(claims)) {
-    return NextResponse.redirect(new URL(`/${locale}`, hubUrl()));
+    return NextResponse.redirect(new URL(`/${locale}/login`, hubUrl()));
   }
 
   return response;
