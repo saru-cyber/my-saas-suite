@@ -36,13 +36,17 @@ export function FooterLocaleSwitcher({
   return (
     <nav
       aria-label={ariaLabel}
-      className="inline-flex items-center gap-1.5 rounded border border-border/40 bg-muted/20 px-2 py-1 text-xs"
+      className="inline-flex min-h-11 items-center gap-1.5 text-sm"
     >
       {LOCALES.map(({ value, label }, index) => {
         const active = value === currentLocale;
         return (
           <span key={value} className="inline-flex items-center gap-1.5">
-            {index > 0 ? <span aria-hidden="true" className="text-muted-foreground/60">|</span> : null}
+            {index > 0 ? (
+              <span aria-hidden="true" className="select-none text-zinc-600">
+                |
+              </span>
+            ) : null}
             <a
               href={localizedPath(pathname, value, search)}
               hrefLang={value}
