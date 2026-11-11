@@ -79,9 +79,11 @@ export default async function DevPortalPage({ params }: { params: Promise<{ loca
     { href: "/login", label: t("login"), path: `/${locale}/login` },
     { href: "/dashboard", label: t("dashboard"), path: `/${locale}/dashboard` },
     { href: "/admin/settings", label: t("admin"), path: `/${locale}/admin/settings` },
-    { href: "/terms", label: t("terms"), path: `/${locale}/terms`, nested: true },
-    { href: "/privacy", label: t("privacy"), path: `/${locale}/privacy`, nested: true },
-    { href: "/legal/merchant", label: t("merchant"), path: `/${locale}/legal/merchant`, nested: true },
+    { href: "/legal", label: t("legal"), path: `/${locale}/legal` },
+    { href: "/legal?tab=terms", label: t("terms"), path: `/${locale}/legal?tab=terms`, nested: true },
+    { href: "/legal?tab=privacy", label: t("privacy"), path: `/${locale}/legal?tab=privacy`, nested: true },
+    { href: "/legal?tab=merchant", label: t("merchant"), path: `/${locale}/legal?tab=merchant`, nested: true },
+    { href: "/legal?tab=email", label: t("email"), path: `/${locale}/legal?tab=email`, nested: true },
   ];
   const appLinks: ScreenLink[] = [
     { href: app1Home, label: t("app1Landing"), path: app1Home, external: true },
@@ -98,9 +100,6 @@ export default async function DevPortalPage({ params }: { params: Promise<{ loca
       <ScreenGroup title={t("hubHeading")}>
         {hubLinks.map((item) => (
           <li key={item.href}>
-            {item.href === "/terms" ? (
-              <p className="px-3 pt-4 pb-1 text-xs font-medium text-muted-foreground">{t("legalHeading")}</p>
-            ) : null}
             <ScreenAnchor item={item} />
           </li>
         ))}

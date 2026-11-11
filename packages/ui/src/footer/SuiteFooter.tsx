@@ -20,31 +20,21 @@ function resolveHubUrl(hubUrl?: string): string {
  */
 export function SuiteFooter({ hubUrl, currentLocale, suiteName = "my-saas-suite" }: SuiteFooterProps) {
   const labels = footerLabels[currentLocale];
-  const base = `${resolveHubUrl(hubUrl)}/${currentLocale}`;
+  const legalHref = `${resolveHubUrl(hubUrl)}/${currentLocale}/legal`;
   const year = new Date().getFullYear();
-  const legalLinks = [
-    { href: `${base}/terms`, label: labels.terms },
-    { href: `${base}/legal/merchant`, label: labels.merchant },
-    { href: `${base}/privacy`, label: labels.privacy },
-  ];
 
   return (
     <footer className="border-t border-border/40 bg-background text-muted-foreground">
-      <div className="mx-auto flex max-w-6xl flex-col gap-4 px-6 py-6 text-sm md:flex-row md:items-center md:justify-between md:px-8">
+      <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-x-6 gap-y-2 px-6 py-4 text-sm md:px-8">
         <p>
           © {year} {suiteName}. {labels.rights}
         </p>
-        <nav aria-label={labels.legalNav}>
-          <ul className="flex flex-wrap gap-x-5 gap-y-2">
-            {legalLinks.map((link) => (
-              <li key={link.href}>
-                <a href={link.href} className="transition-colors hover:text-foreground">
-                  {link.label}
-                </a>
-              </li>
-            ))}
-          </ul>
-        </nav>
+        <a
+          href={legalHref}
+          className="inline-flex min-h-11 items-center transition-colors duration-150 ease-out hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background motion-reduce:transition-none"
+        >
+          {labels.legal}
+        </a>
         <FooterLocaleSwitcher currentLocale={currentLocale} ariaLabel={labels.languageNav} />
       </div>
     </footer>

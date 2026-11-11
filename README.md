@@ -48,7 +48,7 @@ Production maps the same split onto subdomains (`hub.your-suite.com`, `app1.your
 - **Stripe mock mode.** The dummy secret `sk_test_YOUR_STRIPE_SECRET_KEY` skips Stripe, marks the user as `pro` for `app1`, and returns the product dashboard. A real secret creates a Checkout Session. The webhook acknowledges the dummy secret without calling Stripe.
 - **CLI tooling.** `pnpm cli` generates `HUB_JWT_SECRET` and the internal API key with `crypto.randomBytes(32)` and writes `hub/.env.local` and `products/app1/.env.local`.
 - **i18n (EN / JA).** `next-intl` routes every page under `/[locale]`. Message catalogs live in `messages/en.json` and `messages/ja.json`. Footers include an EN | JA switch.
-- **Legal, GA4, and SEO.** Suite terms live on the Hub, with a prototype disclaimer and `[EDIT_REQUIRED]` placeholders. App1 loads GA4 only when `NEXT_PUBLIC_GA_MEASUREMENT_ID` is a real measurement ID, and emits the Search Console verification meta tag from `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION`.
+- **Legal, GA4, and SEO.** Suite legal documents live on the Hub at `/[locale]/legal`, with tabs for terms, privacy, commercial disclosure, and commercial email. A prototype disclaimer and `[EDIT_REQUIRED]` placeholders stay visible. Older paths `/terms`, `/privacy`, and `/legal/merchant` redirect to the matching tab. App1 loads GA4 only when `NEXT_PUBLIC_GA_MEASUREMENT_ID` is a real measurement ID, and emits the Search Console verification meta tag from `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION`.
 
 Local accounts are stored in memory, so a Hub restart clears them. Admin settings use the same fallback: Postgres stores them in `system_settings` when `DATABASE_URL` connects, and the Hub process keeps them in memory when it does not. The Drizzle schema covers `users` and `system_settings`.
 
@@ -89,7 +89,7 @@ my-saas-suite
 │ ├ ログイン・新規登録 (/[locale]/login)
 │ ├ ユーザーマイページ (/[locale]/dashboard)
 │ ├ 管理者設定 (/[locale]/admin/settings)
-│ └ 法務ページ (/[locale]/terms, /privacy, /legal/merchant)
+│ └ 法務情報 (/[locale]/legal?tab=terms|privacy|merchant|email)
 │
 └ products/app1（子プロダクト :3001）
   ├ LP (/[locale])
@@ -105,9 +105,10 @@ my-saas-suite
 | `/[locale]/login` | Sign in and registration | No sign-in. A successful login sets `suite_session`. |
 | `/[locale]/dashboard` | Account page | Sign-in required. Shows the plan, active products, and the billing portal. |
 | `/[locale]/admin/settings` | Admin settings | `role: admin` only. A signed-out visitor is redirected to `/[locale]/login`. A signed-in member is redirected to `/[locale]/dashboard`. |
-| `/[locale]/terms` | Terms of service | No sign-in |
-| `/[locale]/privacy` | Privacy policy | No sign-in. Placeholder (coming soon). |
-| `/[locale]/legal/merchant` | Specified Commercial Transactions disclosure (特定商取引法に基づく表記) | No sign-in. Placeholder (coming soon). |
+| `/[locale]/legal` | Legal information | No sign-in. Tabs: `terms` (default), `privacy`, `merchant`, `email`, selected with `?tab=`. Terms separate Suite common terms from product-specific provisions. |
+| `/[locale]/terms` | Redirect | Sends visitors to `/[locale]/legal?tab=terms`. |
+| `/[locale]/privacy` | Redirect | Sends visitors to `/[locale]/legal?tab=privacy`. |
+| `/[locale]/legal/merchant` | Redirect | Sends visitors to `/[locale]/legal?tab=merchant`. |
 
 ### Product App1 (`http://localhost:3001`)
 
@@ -123,7 +124,7 @@ The App1 page repeats the same check as middleware. A session without `app1` in 
 ```
 .
 ├── hub/                  Suite Hub (port 3000)
-│   ├── app/[locale]/     home, dev portal, account, terms
+│   ├── app/[locale]/     home, dev portal, account, legal
 │   ├── app/[locale]/admin/settings
 │   ├── messages/         en.json, ja.json
 │   └── src/              auth, billing, settings, user store

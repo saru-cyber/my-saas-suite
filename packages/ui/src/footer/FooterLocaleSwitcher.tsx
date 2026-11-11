@@ -1,6 +1,6 @@
 "use client";
 
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import type { FooterLocale } from "./labels";
 
 const LOCALES: { value: FooterLocale; label: string }[] = [
@@ -8,15 +8,19 @@ const LOCALES: { value: FooterLocale; label: string }[] = [
   { value: "en", label: "EN" },
 ];
 
-/** Swaps (or prepends) the leading `/{locale}` segment of the current path. */
-export function localizedPath(pathname: string, locale: FooterLocale): string {
+/** Swaps (or prepends) the leading `/{locale}` segment and keeps the query string. */
+export function localizedPath(pathname: string, locale: FooterLocale, search = ""): string {
   const segments = pathname.split("/").filter(Boolean);
   if (segments[0] === "ja" || segments[0] === "en") {
     segments[0] = locale;
   } else {
     segments.unshift(locale);
   }
-  return `/${segments.join("/")}`;
+  const path = `/${segments.join("/")}`;
+  if (!search) {
+    return path;
+  }
+  return `${path}${search.startsWith("?") ? search : `?${search}`}`;
 }
 
 export function FooterLocaleSwitcher({
@@ -27,6 +31,7 @@ export function FooterLocaleSwitcher({
   ariaLabel: string;
 }) {
   const pathname = usePathname() ?? "/";
+  const search = useSearchParams().toString();
 
   return (
     <nav
@@ -39,7 +44,7 @@ export function FooterLocaleSwitcher({
           <span key={value} className="inline-flex items-center gap-1.5">
             {index > 0 ? <span aria-hidden="true" className="text-muted-foreground/60">|</span> : null}
             <a
-              href={localizedPath(pathname, value)}
+              href={localizedPath(pathname, value, search)}
               hrefLang={value}
               aria-current={active ? "true" : undefined}
               className={
