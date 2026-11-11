@@ -18,3 +18,10 @@ export function suiteProductLaunchUrl(productId: SuiteProduct["id"], locale: str
       return `${app1Origin()}/${locale}/dashboard`;
   }
 }
+
+export function suiteProductHomeUrl(productId: SuiteProduct["id"], locale: string): string {
+  switch (productId) {
+    case "app1":
+      return `${app1Origin()}/${locale}`;
+  }
+}

@@ -42,9 +42,9 @@ Production maps the same split onto subdomains (`hub.your-suite.com`, `app1.your
 
 ## Key features
 
-- **SSO shared cookie.** Hub signs `suite_session` (`userId`, `email`, `activeProducts`, `plan`, and `role`). App1 verifies the first four claims in middleware and sends signed-out or unsubscribed visitors back to the Hub in the same locale. Extra claims such as `role` can be ignored by a product app.
+- **SSO shared cookie.** Hub signs `suite_session` (`userId`, `email`, `activeProducts`, `plan`, and `role`). App1 verifies the first four claims in middleware and sends signed-out or unsubscribed visitors back to the Hub login page (`/{locale}/login`) in the same locale. Extra claims such as `role` can be ignored by a product app.
 - **Account page.** A signed-in user opens `/en/dashboard` (or `/ja/dashboard`) for the current plan, product links, and the billing portal. An admin also gets a link to settings.
-- **Admin settings.** `/en/admin/settings` allows `role: admin` only. A signed-out visitor returns to the Hub home. A signed-in member returns to the account page. Auth, Stripe, and appearance tabs save in place and show a toast. Rows live in `system_settings` when Postgres is reachable, and in process memory otherwise. A missing row falls back to `.env`. Checkout and the billing portal still follow `STRIPE_SECRET_KEY` in the environment, so the dummy secret stays in mock mode until that value changes.
+- **Admin settings.** `/en/admin/settings` allows `role: admin` only. A signed-out visitor is redirected to `/[locale]/login`. A signed-in member is redirected to `/[locale]/dashboard`. Auth, Stripe, and appearance tabs save in place and show a toast. Rows live in `system_settings` when Postgres is reachable, and in process memory otherwise. A missing row falls back to `.env`. Checkout and the billing portal still follow `STRIPE_SECRET_KEY` in the environment, so the dummy secret stays in mock mode until that value changes.
 - **Stripe mock mode.** The dummy secret `sk_test_YOUR_STRIPE_SECRET_KEY` skips Stripe, marks the user as `pro` for `app1`, and returns the product dashboard. A real secret creates a Checkout Session. The webhook acknowledges the dummy secret without calling Stripe.
 - **CLI tooling.** `pnpm cli` generates `HUB_JWT_SECRET` and the internal API key with `crypto.randomBytes(32)` and writes `hub/.env.local` and `products/app1/.env.local`.
 - **i18n (EN / JA).** `next-intl` routes every page under `/[locale]`. Message catalogs live in `messages/en.json` and `messages/ja.json`. Footers include an EN | JA switch.
@@ -65,23 +65,65 @@ pnpm dev
 | App | URL |
 | --- | --- |
 | Hub | http://localhost:3000/en |
+| Developer navigation | http://localhost:3000/en/dev |
 | Hub account | http://localhost:3000/en/dashboard |
 | Hub admin settings | http://localhost:3000/en/admin/settings |
 | App1 landing | http://localhost:3001/en |
 | App1 dashboard | http://localhost:3001/en/dashboard |
 
-Use `/ja` in place of `/en` for Japanese.
+Use `/ja` in place of `/en` for Japanese. Developer navigation (`/en/dev`) is a local index of every screen. It returns 404 when `NODE_ENV` is `production`. Every screen and its access rule is listed in [Available Routes & Screens](#available-routes--screens).
 
 Demo account: `demo@example.com` / `password`. This user is an admin and can open both the account page and the admin settings console. A user who registers in the app is a member: the account page is available, and admin settings redirects that user to the account page. Registration starts on the free plan. Use **Buy App1 (Pro) (Mock)** on the Hub home to add `app1` and open the product dashboard. Sign in again after a role change. A session issued before `role` existed is treated as a member.
 
 `pnpm cli` overwrites both `.env.local` files. Run it again only when you want new secrets. Those files are gitignored.
+
+## Available Routes & Screens
+
+`[locale]` is `en` or `ja`. English is the default, so `/` opens `/en`. Hub middleware only selects the locale. Sign-in checks run in the account page and in `hub/app/[locale]/admin/layout.tsx`. App1 middleware gates `/{locale}/dashboard` only; the landing page stays public.
+
+```text
+my-saas-suite
+├ hub（親ポータル・認証・決済 :3000）
+│ ├ LP (/[locale])
+│ ├ 開発者用ナビゲーション (/[locale]/dev)
+│ ├ ログイン・新規登録 (/[locale]/login)
+│ ├ ユーザーマイページ (/[locale]/dashboard)
+│ ├ 管理者設定 (/[locale]/admin/settings)
+│ └ 法務ページ (/[locale]/terms, /privacy, /legal/merchant)
+│
+└ products/app1（子プロダクト :3001）
+  ├ LP (/[locale])
+  └ プロダクトダッシュボード (/[locale]/dashboard)
+```
+
+### Hub (`http://localhost:3000`)
+
+| Path | Screen | Access |
+| --- | --- | --- |
+| `/[locale]` | Suite landing page | No sign-in |
+| `/[locale]/dev` | Developer navigation | No sign-in. Available only when `NODE_ENV` is not `production` (set `DEV_PORTAL_ENABLED=false` to hide it in development too). Production returns 404. |
+| `/[locale]/login` | Sign in and registration | No sign-in. A successful login sets `suite_session`. |
+| `/[locale]/dashboard` | Account page | Sign-in required. Shows the plan, active products, and the billing portal. |
+| `/[locale]/admin/settings` | Admin settings | `role: admin` only. A signed-out visitor is redirected to `/[locale]/login`. A signed-in member is redirected to `/[locale]/dashboard`. |
+| `/[locale]/terms` | Terms of service | No sign-in |
+| `/[locale]/privacy` | Privacy policy | No sign-in. Placeholder (coming soon). |
+| `/[locale]/legal/merchant` | Specified Commercial Transactions disclosure (特定商取引法に基づく表記) | No sign-in. Placeholder (coming soon). |
+
+### Product App1 (`http://localhost:3001`)
+
+| Path | Screen | Access |
+| --- | --- | --- |
+| `/[locale]` | App1 landing page | No sign-in |
+| `/[locale]/dashboard` | App1 dashboard | Sign-in required, and `activeProducts` must include `app1`. Otherwise the visitor is redirected to the Hub login page at `http://localhost:3000/[locale]/login`. |
+
+The App1 page repeats the same check as middleware. A session without `app1` in `activeProducts` does not open the dashboard. Role (`admin` or `member`) is not part of this gate.
 
 ## Directory structure
 
 ```
 .
 ├── hub/                  Suite Hub (port 3000)
-│   ├── app/[locale]/     home, account, terms
+│   ├── app/[locale]/     home, dev portal, account, terms
 │   ├── app/[locale]/admin/settings
 │   ├── messages/         en.json, ja.json
 │   └── src/              auth, billing, settings, user store
@@ -121,7 +163,7 @@ Copy these files from `products/app1` when the new app does not already have the
 - `src/auth/claims.ts`
 - `i18n/routing.ts`
 
-Set `PRODUCT_ID` in `src/auth/session.ts` to the new id, such as `app2`. The guard reads `suite_session`, checks the HS256 signature with `HUB_JWT_SECRET`, and opens `/{locale}/dashboard` only when `activeProducts` contains that id. Any other visitor to that path is sent to `{NEXT_PUBLIC_HUB_URL}/{locale}`, the Hub home in the same locale. The public landing page stays open, as it does in App1.
+Set `PRODUCT_ID` in `src/auth/session.ts` to the new id, such as `app2`. The guard reads `suite_session`, checks the HS256 signature with `HUB_JWT_SECRET`, and opens `/{locale}/dashboard` only when `activeProducts` contains that id. Any other visitor to that path is sent to `{NEXT_PUBLIC_HUB_URL}/{locale}/login`, the Hub login page in the same locale. The public landing page stays open, as it does in App1.
 
 ### 4. Assign a port and sync env
 

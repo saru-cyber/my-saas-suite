@@ -223,5 +223,24 @@
   "privacy": {
     "title": "プライバシーポリシー",
     "comingSoon": "このページは現在準備中です。公開前にプライバシーポリシーを掲載します。"
+  },
+  "dev": {
+    "title": "my-saas-suite - Dev Portal",
+    "hubHeading": "Hub (:3000)",
+    "app1Heading": "Product App1 (:3001)",
+    "accountsHeading": "テストアカウント",
+    "languageNav": "言語",
+    "legalHeading": "法務ページ",
+    "landing": "スイートLP",
+    "login": "ログイン・新規登録",
+    "dashboard": "ユーザーマイページ",
+    "admin": "管理者設定",
+    "terms": "利用規約",
+    "privacy": "プライバシーポリシー",
+    "merchant": "特定商取引法に基づく表記",
+    "app1Landing": "App1 LP",
+    "app1Dashboard": "App1 ダッシュボード",
+    "adminRole": "Admin",
+    "mockPurchase": "ログイン画面の <login>Buy App1 (Mock)</login> で app1 権限を付与できます。"
   }
 }

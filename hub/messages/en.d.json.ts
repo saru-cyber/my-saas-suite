@@ -226,6 +226,25 @@ declare const messages: {
   "privacy": {
     "title": "Privacy Policy",
     "comingSoon": "This page is being prepared. Our privacy policy will be published here before launch."
+  },
+  "dev": {
+    "title": "my-saas-suite - Dev Portal",
+    "hubHeading": "Hub (:3000)",
+    "app1Heading": "Product App1 (:3001)",
+    "accountsHeading": "Test accounts",
+    "languageNav": "Language",
+    "legalHeading": "Legal",
+    "landing": "Suite landing page",
+    "login": "Sign in and registration",
+    "dashboard": "Account page",
+    "admin": "Admin settings",
+    "terms": "Terms of service",
+    "privacy": "Privacy policy",
+    "merchant": "Specified Commercial Transactions disclosure",
+    "app1Landing": "App1 landing page",
+    "app1Dashboard": "App1 dashboard",
+    "adminRole": "Admin",
+    "mockPurchase": "<login>Buy App1 (Mock)</login> on the sign-in page grants access to app1."
   }
 };
 export default messages;
