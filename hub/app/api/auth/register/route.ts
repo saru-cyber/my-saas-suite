@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { parseCredentials } from "../../../../src/auth/credentials";
+import { isGoogleConfigured, isMockLoginEnabled } from "../../../../src/auth/google";
 import { registerUser } from "../../../../src/db/users";
+import { readAuthSettings } from "../../../../src/settings/store";
 
 export const runtime = "nodejs";
 
@@ -31,6 +33,11 @@ export async function POST(request: Request): Promise<NextResponse<RegisterSucce
   const parsed = parseCredentials(body);
   if (!parsed.ok) {
     return NextResponse.json({ ok: false, message: parsed.message }, { status: 400 });
+  }
+
+  const auth = await readAuthSettings();
+  if (!isMockLoginEnabled(isGoogleConfigured(auth.googleClientId, auth.googleClientSecret))) {
+    return NextResponse.json({ ok: false, message: "この登録方法は無効です" }, { status: 404 });
   }
 
   const result = registerUser(parsed.credentials.email, parsed.credentials.password);

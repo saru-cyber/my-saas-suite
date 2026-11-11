@@ -68,11 +68,11 @@ export default async function DashboardPage({ params, searchParams }: DashboardP
         </p>
       ) : null}
       <AccountOverview
-        displayName={displayNameFromEmail(claims.email)}
+        displayName={claims.name.length > 0 ? claims.name : displayNameFromEmail(claims.email)}
         email={claims.email}
         portalHref={`/api/stripe/portal?locale=${locale}`}
         portalExternal={!isStripeMockMode()}
-        showAdminLink={claims.role === "admin"}
+        showAdminLink={claims.isAdmin}
       />
       <StatusMetrics plan={claims.plan} activeProducts={claims.activeProducts} />
       <ProductAccessGrid locale={locale} activeProducts={claims.activeProducts} />

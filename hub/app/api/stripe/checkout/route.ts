@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import type { SuiteSessionClaims } from "../../../../src/auth/claims";
 import { buildSessionCookie, readSessionFromRequest, signSession } from "../../../../src/auth/session";
 import {
   createStripeCheckoutUrl,
@@ -7,7 +6,7 @@ import {
   MOCK_CHECKOUT_SUCCESS_URL,
   parseCheckoutInput,
 } from "../../../../src/billing/stripe";
-import { grantProductAccess } from "../../../../src/db/users";
+import { grantProductAccess, sessionClaimsForUser } from "../../../../src/db/users";
 import { readAuthSettings, sessionTtlSeconds } from "../../../../src/settings/store";
 
 export const runtime = "nodejs";
@@ -54,13 +53,7 @@ export async function POST(request: Request): Promise<NextResponse<CheckoutSucce
       return errorResponse("ユーザーが見つかりません", 404);
     }
 
-    const claims: SuiteSessionClaims = {
-      userId: user.id,
-      email: user.email,
-      activeProducts: user.activeProducts,
-      plan: user.plan,
-      role: user.role,
-    };
+    const claims = sessionClaimsForUser(user);
 
     let token: string;
     let maxAge = 60 * 60 * 24 * 7;

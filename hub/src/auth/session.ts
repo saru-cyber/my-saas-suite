@@ -1,6 +1,6 @@
 import { parseCookie, stringifySetCookie } from "cookie";
 import jwt from "jsonwebtoken";
-import { isSuiteSessionClaims, roleFromClaims, type SuiteSessionClaims } from "./claims";
+import { normalizeSessionClaims, type SuiteSessionClaims } from "./claims";
 
 export const SESSION_COOKIE_NAME = "suite_session";
 
@@ -24,16 +24,7 @@ export function signSession(claims: SuiteSessionClaims, expiresInSeconds = WEEK_
 export function verifySession(token: string): SuiteSessionClaims | null {
   try {
     const decoded: unknown = jwt.verify(token, readJwtSecret());
-    if (!isSuiteSessionClaims(decoded)) {
-      return null;
-    }
-    return {
-      userId: decoded.userId,
-      email: decoded.email,
-      activeProducts: decoded.activeProducts,
-      plan: decoded.plan,
-      role: roleFromClaims(decoded.role),
-    };
+    return normalizeSessionClaims(decoded);
   } catch {
     return null;
   }

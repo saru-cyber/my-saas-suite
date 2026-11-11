@@ -28,7 +28,7 @@ export default async function AdminLayout({
   if (!session) {
     redirect(`/${locale}/login`);
   }
-  if (session.role !== "admin") {
+  if (!session.isAdmin) {
     redirect(`/${locale}/dashboard`);
   }
 

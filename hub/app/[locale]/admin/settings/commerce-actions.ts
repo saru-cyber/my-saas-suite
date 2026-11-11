@@ -1,7 +1,6 @@
 "use server";
 
 import { cookies } from "next/headers";
-import { roleFromClaims } from "../../../../src/auth/claims";
 import { SESSION_COOKIE_NAME, verifySession } from "../../../../src/auth/session";
 import { isPricingPatternId, patternUsesTrial } from "../../../../src/commerce/patterns";
 import type { AbTestEventView } from "../../../../src/commerce/report";
@@ -34,7 +33,7 @@ async function requireAdmin(): Promise<boolean> {
   const cookieStore = await cookies();
   const token = cookieStore.get(SESSION_COOKIE_NAME)?.value;
   const session = token ? verifySession(token) : null;
-  return session !== null && roleFromClaims(session.role) === "admin";
+  return session?.isAdmin === true;
 }
 
 function readBoundedText(value: unknown, maxLength: number): string | null {

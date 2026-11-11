@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server";
 import { parseCredentials } from "../../../../src/auth/credentials";
+import { isGoogleConfigured, isMockLoginEnabled } from "../../../../src/auth/google";
 import { buildSessionCookie, signSession } from "../../../../src/auth/session";
 import type { SuiteSessionClaims } from "../../../../src/auth/claims";
-import { authenticateUser } from "../../../../src/db/users";
+import { authenticateUser, sessionClaimsForUser } from "../../../../src/db/users";
 import { readAuthSettings, sessionTtlSeconds } from "../../../../src/settings/store";
 
 export const runtime = "nodejs";
@@ -35,23 +36,22 @@ export async function POST(request: Request): Promise<NextResponse<LoginSuccess 
     return errorResponse(parsed.message, 400);
   }
 
+  const auth = await readAuthSettings();
+  if (!isMockLoginEnabled(isGoogleConfigured(auth.googleClientId, auth.googleClientSecret))) {
+    return errorResponse("このログイン方法は無効です", 404);
+  }
+
   const user = authenticateUser(parsed.credentials.email, parsed.credentials.password);
   if (!user) {
     return errorResponse("メールアドレスまたはパスワードが違います", 401);
   }
 
-  const claims: SuiteSessionClaims = {
-    userId: user.id,
-    email: user.email,
-    activeProducts: user.activeProducts,
-    plan: user.plan,
-    role: user.role,
-  };
+  const claims: SuiteSessionClaims = sessionClaimsForUser(user);
 
   let token: string;
   let maxAge = 60 * 60 * 24 * 7;
   try {
-    maxAge = sessionTtlSeconds(await readAuthSettings());
+    maxAge = sessionTtlSeconds(auth);
     token = signSession(claims, maxAge);
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : "JWTの発行に失敗しました";

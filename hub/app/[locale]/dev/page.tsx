@@ -1,7 +1,9 @@
 import { hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { notFound } from "next/navigation";
+import { cookies } from "next/headers";
+import { notFound, redirect } from "next/navigation";
 import type { ReactNode } from "react";
+import { SESSION_COOKIE_NAME, verifySession } from "../../../src/auth/session";
 import { Link } from "../../../i18n/navigation";
 import { routing, type AppLocale } from "../../../i18n/routing";
 import { suiteProductHomeUrl, suiteProductLaunchUrl } from "../../../src/products/catalog";
@@ -70,6 +72,15 @@ export default async function DevPortalPage({ params }: { params: Promise<{ loca
     notFound();
   }
   setRequestLocale(locale);
+
+  const token = (await cookies()).get(SESSION_COOKIE_NAME)?.value;
+  const session = token ? verifySession(token) : null;
+  if (!session) {
+    redirect(`/${locale}/login`);
+  }
+  if (!session.isAdmin) {
+    redirect(`/${locale}/dashboard`);
+  }
 
   const t = await getTranslations("dev");
   const app1Home = suiteProductHomeUrl("app1", locale);

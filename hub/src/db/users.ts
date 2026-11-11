@@ -1,10 +1,27 @@
-import { randomUUID } from "node:crypto";
+import { randomBytes, randomUUID } from "node:crypto";
+import { isAdminEmail } from "../auth/admin";
+import { toSessionClaims, type SuiteSessionClaims } from "../auth/claims";
 import { hashPassword, verifyPassword } from "../auth/password";
-import type { User } from "./schema";
+import { sanitizeImage, sanitizeName } from "../auth/profile";
+
+export const MOCK_MEMBER_EMAIL = "demo@example.com";
+
+interface StoredUser {
+  id: string;
+  email: string;
+  passwordHash: string;
+  activeProducts: string[];
+  plan: string;
+  name: string;
+  image: string | null;
+  createdAt: Date;
+}
 
 export interface PublicUser {
   id: string;
   email: string;
+  name: string;
+  image: string | null;
   activeProducts: string[];
   plan: string;
   role: "admin" | "member";
@@ -15,34 +32,36 @@ type UserResult =
   | { ok: true; user: PublicUser }
   | { ok: false; message: string; status: 409 };
 
-const usersByEmail = new Map<string, User>();
-const usersById = new Map<string, User>();
+const usersByEmail = new Map<string, StoredUser>();
+const usersById = new Map<string, StoredUser>();
 
-function toPublicUser(user: User): PublicUser {
+function toPublicUser(user: StoredUser): PublicUser {
   return {
     id: user.id,
     email: user.email,
-    activeProducts: user.activeProducts,
+    name: user.name,
+    image: user.image,
+    activeProducts: [...user.activeProducts],
     plan: user.plan,
-    role: user.role,
+    role: isAdminEmail(user.email) ? "admin" : "member",
     createdAt: user.createdAt,
   };
 }
 
-function remember(user: User): void {
+function remember(user: StoredUser): void {
   usersByEmail.set(user.email, user);
   usersById.set(user.id, user);
 }
 
 function seedDemoUser(): void {
-  const email = "demo@example.com";
   remember({
     id: "00000000-0000-4000-8000-000000000001",
-    email,
+    email: MOCK_MEMBER_EMAIL,
     passwordHash: hashPassword("password"),
     activeProducts: [],
     plan: "free",
-    role: "admin",
+    name: "Demo User",
+    image: null,
     createdAt: new Date("2026-01-01T00:00:00.000Z"),
   });
 }
@@ -54,13 +73,14 @@ export function registerUser(email: string, password: string): UserResult {
     return { ok: false, message: "このメールアドレスは登録済みです", status: 409 };
   }
 
-  const user: User = {
+  const user: StoredUser = {
     id: randomUUID(),
     email,
     passwordHash: hashPassword(password),
     activeProducts: [],
     plan: "free",
-    role: "member",
+    name: "",
+    image: null,
     createdAt: new Date(),
   };
   remember(user);
@@ -100,4 +120,50 @@ export function authenticateUser(email: string, password: string): PublicUser | 
     return null;
   }
   return toPublicUser(user);
+}
+
+export interface OAuthProfile {
+  email: string;
+  name: string;
+  image: string | null;
+}
+
+/** Finds the account by email, or creates one that cannot be used with a password. */
+export function upsertOAuthUser(profile: OAuthProfile): PublicUser {
+  const email = profile.email.trim().toLowerCase();
+  const existing = usersByEmail.get(email);
+  if (existing) {
+    existing.name = sanitizeName(profile.name) || existing.name;
+    existing.image = sanitizeImage(profile.image);
+    return toPublicUser(existing);
+  }
+
+  const user: StoredUser = {
+    id: randomUUID(),
+    email,
+    passwordHash: hashPassword(randomBytes(32).toString("hex")),
+    activeProducts: [],
+    plan: "free",
+    name: sanitizeName(profile.name),
+    image: sanitizeImage(profile.image),
+    createdAt: new Date(),
+  };
+  remember(user);
+  return toPublicUser(user);
+}
+
+export function findUserByEmail(email: string): PublicUser | null {
+  const user = usersByEmail.get(email.trim().toLowerCase());
+  return user ? toPublicUser(user) : null;
+}
+
+export function sessionClaimsForUser(user: PublicUser): SuiteSessionClaims {
+  return toSessionClaims({
+    userId: user.id,
+    email: user.email,
+    name: user.name,
+    image: user.image,
+    activeProducts: user.activeProducts,
+    plan: user.plan,
+  });
 }

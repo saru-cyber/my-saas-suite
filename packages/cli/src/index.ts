@@ -43,6 +43,12 @@ STRIPE_WEBHOOK_SECRET="whsec_YOUR_WEBHOOK_SECRET"
 # 内部接続用（CLIがリアルな乱数を自動生成）
 HUB_JWT_SECRET="${secrets.hubJwtSecret}"
 APP1_INTERNAL_API_KEY="${secrets.app1InternalApiKey}"
+
+# Google OAuth。未設定のときはログイン画面の開発用モックを使う
+GOOGLE_CLIENT_ID=""
+GOOGLE_CLIENT_SECRET=""
+# カンマ区切り。ここに含まれるメールだけが管理者になる
+ADMIN_EMAILS="admin@example.com"
 `;
 }
 

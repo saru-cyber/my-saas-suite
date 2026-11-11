@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
-import type { SuiteSessionClaims } from "../../../../src/auth/claims";
 import { buildSessionCookie, readSessionFromRequest, signSession } from "../../../../src/auth/session";
 import { claimCompletedSession, fulfillPurchase } from "../../../../src/billing/fulfillment";
 import { createSubscriptionCheckoutUrl, isStripeMockMode } from "../../../../src/billing/stripe";
 import { resolvePricingVariant } from "../../../../src/commerce/pricing";
 import { recordAbTestEvent } from "../../../../src/commerce/store";
 import { buildVisitorCookie, readOrCreateVisitorId } from "../../../../src/commerce/visitor";
+import { sessionClaimsForUser } from "../../../../src/db/users";
 import { readAuthSettings, sessionTtlSeconds } from "../../../../src/settings/store";
 
 export const runtime = "nodejs";
@@ -127,13 +127,7 @@ export async function POST(request: Request): Promise<NextResponse<CheckoutSucce
       });
     }
 
-    const claims: SuiteSessionClaims = {
-      userId: fulfilled.user.id,
-      email: fulfilled.user.email,
-      activeProducts: fulfilled.user.activeProducts,
-      plan: fulfilled.user.plan,
-      role: fulfilled.user.role,
-    };
+    const claims = sessionClaimsForUser(fulfilled.user);
     let token: string;
     let maxAge = 60 * 60 * 24 * 7;
     try {
