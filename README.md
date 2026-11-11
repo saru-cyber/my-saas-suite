@@ -89,6 +89,7 @@ my-saas-suite
 │ ├ ログイン・新規登録 (/[locale]/login)
 │ ├ ユーザーマイページ (/[locale]/dashboard)
 │ ├ 管理者設定 (/[locale]/admin/settings)
+│ ├ ユーザー・契約一覧 (/[locale]/admin/users)
 │ └ 法務情報 (/[locale]/legal?tab=terms|privacy|merchant|email)
 │
 └ products/app1（子プロダクト :3001）
@@ -105,6 +106,7 @@ my-saas-suite
 | `/[locale]/login` | Sign in and registration | No sign-in. A successful login sets `suite_session`. |
 | `/[locale]/dashboard` | Account page | Sign-in required. Shows the plan, active products, and the billing portal. |
 | `/[locale]/admin/settings` | Admin settings | `role: admin` only. A signed-out visitor is redirected to `/[locale]/login`. A signed-in member is redirected to `/[locale]/dashboard`. |
+| `/[locale]/admin/users` | Users and subscriptions | `role: admin` only. Same redirects as admin settings. Lists each user's id, email, role, plan, active products, and registration time. |
 | `/[locale]/legal` | Legal information | No sign-in. Tabs: `terms` (default), `privacy`, `merchant`, `email`, selected with `?tab=`. Terms separate Suite common terms from product-specific provisions. |
 | `/[locale]/terms` | Redirect | Sends visitors to `/[locale]/legal?tab=terms`. |
 | `/[locale]/privacy` | Redirect | Sends visitors to `/[locale]/legal?tab=privacy`. |
@@ -126,6 +128,7 @@ The App1 page repeats the same check as middleware. A session without `app1` in 
 ├── hub/                  Suite Hub (port 3000)
 │   ├── app/[locale]/     home, dev portal, account, legal
 │   ├── app/[locale]/admin/settings
+│   ├── app/[locale]/admin/users
 │   ├── messages/         en.json, ja.json
 │   └── src/              auth, billing, settings, user store
 ├── products/app1/        Product A template (port 3001)

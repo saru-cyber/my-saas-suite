@@ -67,6 +67,36 @@
     "title": "Settings",
     "lead": "Manage authentication, billing, pricing, bundles, experiments, and appearance without editing environment files.",
     "back": "Back to account",
+    "nav": {
+      "label": "Admin",
+      "settings": "Settings",
+      "users": "Users"
+    },
+    "users": {
+      "metaTitle": "Users",
+      "title": "Users and subscriptions",
+      "lead": "Review accounts, roles, plans, and the products each person can open.",
+      "emptyTitle": "No users yet",
+      "emptyBody": "Accounts appear here after someone registers.",
+      "emptyAction": "Register an account",
+      "noProducts": "None",
+      "columns": {
+        "id": "User ID",
+        "email": "Email",
+        "role": "Role",
+        "plan": "Plan",
+        "products": "Active products",
+        "createdAt": "Registered"
+      },
+      "roles": {
+        "admin": "Admin",
+        "member": "Member"
+      },
+      "plans": {
+        "free": "Free",
+        "pro": "Pro"
+      }
+    },
     "save": "Save",
     "saving": "Saving",
     "saved": "Settings saved",
@@ -200,6 +230,7 @@
     "login": "Sign in and registration",
     "dashboard": "Account page",
     "admin": "Admin settings",
+    "users": "Users and subscriptions",
     "terms": "Terms of service",
     "privacy": "Privacy policy",
     "merchant": "Commercial Disclosure",

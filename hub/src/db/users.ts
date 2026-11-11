@@ -88,6 +88,12 @@ export function grantProductAccess(userId: string, productId: string): PublicUse
   return grantProducts(userId, [productId]);
 }
 
+export function listUsers(): PublicUser[] {
+  return [...usersById.values()]
+    .map((user) => ({ ...toPublicUser(user), activeProducts: [...user.activeProducts] }))
+    .sort((left, right) => right.createdAt.getTime() - left.createdAt.getTime() || left.email.localeCompare(right.email));
+}
+
 export function authenticateUser(email: string, password: string): PublicUser | null {
   const user = usersByEmail.get(email);
   if (!user || !verifyPassword(password, user.passwordHash)) {

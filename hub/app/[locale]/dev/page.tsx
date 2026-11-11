@@ -79,6 +79,7 @@ export default async function DevPortalPage({ params }: { params: Promise<{ loca
     { href: "/login", label: t("login"), path: `/${locale}/login` },
     { href: "/dashboard", label: t("dashboard"), path: `/${locale}/dashboard` },
     { href: "/admin/settings", label: t("admin"), path: `/${locale}/admin/settings` },
+    { href: "/admin/users", label: t("users"), path: `/${locale}/admin/users` },
     { href: "/legal", label: t("legal"), path: `/${locale}/legal` },
     { href: "/legal?tab=terms", label: t("terms"), path: `/${locale}/legal?tab=terms`, nested: true },
     { href: "/legal?tab=privacy", label: t("privacy"), path: `/${locale}/legal?tab=privacy`, nested: true },

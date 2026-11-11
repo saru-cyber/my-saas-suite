@@ -5,6 +5,7 @@ import { notFound, redirect } from "next/navigation";
 import type { ReactNode } from "react";
 import { SESSION_COOKIE_NAME, verifySession } from "../../../src/auth/session";
 import { routing } from "../../../i18n/routing";
+import { AdminNav } from "./_components/AdminNav";
 
 export const dynamic = "force-dynamic";
 
@@ -31,5 +32,10 @@ export default async function AdminLayout({
     redirect(`/${locale}/dashboard`);
   }
 
-  return children;
+  return (
+    <>
+      <AdminNav />
+      {children}
+    </>
+  );
 }
