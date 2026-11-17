@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @source "../../packages/ui/src";
+@source "../../packages/legal/src";
 
 /*
  * Semantic palette for Light and Dark.

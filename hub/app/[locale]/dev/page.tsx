@@ -91,11 +91,10 @@ export default async function DevPortalPage({ params }: { params: Promise<{ loca
     { href: "/dashboard", label: t("dashboard"), path: `/${locale}/dashboard` },
     { href: "/admin/settings", label: t("admin"), path: `/${locale}/admin/settings` },
     { href: "/admin/users", label: t("users"), path: `/${locale}/admin/users` },
-    { href: "/legal", label: t("legal"), path: `/${locale}/legal` },
-    { href: "/legal?tab=terms", label: t("terms"), path: `/${locale}/legal?tab=terms`, nested: true },
-    { href: "/legal?tab=privacy", label: t("privacy"), path: `/${locale}/legal?tab=privacy`, nested: true },
-    { href: "/legal?tab=merchant", label: t("merchant"), path: `/${locale}/legal?tab=merchant`, nested: true },
-    { href: "/legal?tab=email", label: t("email"), path: `/${locale}/legal?tab=email`, nested: true },
+    { href: "/legal/terms", label: t("terms"), path: `/${locale}/legal/terms` },
+    { href: "/legal/privacy", label: t("privacy"), path: `/${locale}/legal/privacy` },
+    { href: "/legal/tokushoho", label: t("merchant"), path: `/${locale}/legal/tokushoho` },
+    { href: "/legal/specified-electronic-mail", label: t("email"), path: `/${locale}/legal/specified-electronic-mail` },
   ];
   const appLinks: ScreenLink[] = [
     { href: app1Home, label: t("app1Landing"), path: app1Home, external: true },

@@ -48,7 +48,7 @@ Production maps the same split onto subdomains (`hub.your-suite.com`, `app1.your
 - **Stripe mock mode.** The dummy secret `sk_test_YOUR_STRIPE_SECRET_KEY` skips Stripe, marks the user as `pro` for `app1`, and returns the product dashboard. A real secret creates a Checkout Session. The webhook acknowledges the dummy secret without calling Stripe.
 - **CLI tooling.** `pnpm cli` generates `HUB_JWT_SECRET` and the internal API key with `crypto.randomBytes(32)` and writes `hub/.env.local` and `products/app1/.env.local`.
 - **i18n (EN / JA).** `next-intl` routes every page under `/[locale]`. Message catalogs live in `messages/en.json` and `messages/ja.json`. Footers include an EN | JA switch.
-- **Legal, GA4, and SEO.** Suite legal documents live on the Hub at `/[locale]/legal`, with tabs for terms, privacy, commercial disclosure, and commercial email. A prototype disclaimer and `[EDIT_REQUIRED]` placeholders stay visible. Older paths `/terms`, `/privacy`, and `/legal/merchant` redirect to the matching tab. App1 loads GA4 only when `NEXT_PUBLIC_GA_MEASUREMENT_ID` is a real measurement ID, and emits the Search Console verification meta tag from `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION`.
+- **Legal, GA4, and SEO.** Terms, privacy, commercial disclosure, and the Specified Electronic Mail Act notice are Markdown files in `packages/legal/content/{ja,en}/`. Hub and App1 render the same files at `/[locale]/legal/<slug>`. A prototype disclaimer stays above the document. Older paths `/terms`, `/privacy`, `/legal/merchant`, and `/legal?tab=` redirect to the matching page. App1 loads GA4 only when `NEXT_PUBLIC_GA_MEASUREMENT_ID` is a real measurement ID, and emits the Search Console verification meta tag from `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION`.
 
 Local accounts are stored in memory, so a Hub restart clears them. Admin settings use the same fallback: Postgres stores them in `system_settings` when `DATABASE_URL` connects, and the Hub process keeps them in memory when it does not. The Drizzle schema covers `users` and `system_settings`.
 
@@ -90,11 +90,15 @@ my-saas-suite
 │ ├ ユーザーマイページ (/[locale]/dashboard)
 │ ├ 管理者設定 (/[locale]/admin/settings)
 │ ├ ユーザー・契約一覧 (/[locale]/admin/users)
-│ └ 法務情報 (/[locale]/legal?tab=terms|privacy|merchant|email)
+│ ├ 利用規約 (/[locale]/legal/terms)
+│ ├ プライバシーポリシー (/[locale]/legal/privacy)
+│ ├ 特定商取引法に基づく表記 (/[locale]/legal/tokushoho)
+│ └ 特定電子メール法に基づく表記 (/[locale]/legal/specified-electronic-mail)
 │
 └ products/app1（子プロダクト :3001）
   ├ LP (/[locale])
-  └ プロダクトダッシュボード (/[locale]/dashboard)
+  ├ プロダクトダッシュボード (/[locale]/dashboard)
+  └ 法務文書（Hub と同じ4ページ。`packages/legal/content` を読む）
 ```
 
 ### Hub (`http://localhost:3000`)
@@ -107,10 +111,14 @@ my-saas-suite
 | `/[locale]/dashboard` | Account page | Sign-in required. Shows the plan, active products, and the billing portal. |
 | `/[locale]/admin/settings` | Admin settings | `role: admin` only. A signed-out visitor is redirected to `/[locale]/login`. A signed-in member is redirected to `/[locale]/dashboard`. |
 | `/[locale]/admin/users` | Users and subscriptions | `role: admin` only. Same redirects as admin settings. Lists each user's id, email, role, plan, active products, and registration time. |
-| `/[locale]/legal` | Legal information | No sign-in. Tabs: `terms` (default), `privacy`, `merchant`, `email`, selected with `?tab=`. Terms separate Suite common terms from product-specific provisions. |
-| `/[locale]/terms` | Redirect | Sends visitors to `/[locale]/legal?tab=terms`. |
-| `/[locale]/privacy` | Redirect | Sends visitors to `/[locale]/legal?tab=privacy`. |
-| `/[locale]/legal/merchant` | Redirect | Sends visitors to `/[locale]/legal?tab=merchant`. |
+| `/[locale]/legal/terms` | Terms of Service | No sign-in. Rendered from `packages/legal/content/[locale]/terms.md`. |
+| `/[locale]/legal/privacy` | Privacy Policy | No sign-in. Rendered from `privacy.md`. |
+| `/[locale]/legal/tokushoho` | Specified Commercial Transactions Act | No sign-in. Rendered from `tokushoho.md`. |
+| `/[locale]/legal/specified-electronic-mail` | Specified Electronic Mail Act | No sign-in. Rendered from `specified-electronic-mail.md`. |
+| `/[locale]/legal` | Redirect | Sends visitors to `/[locale]/legal/terms`. `?tab=privacy`, `merchant`, or `email` selects the matching document. |
+| `/[locale]/terms` | Redirect | Sends visitors to `/[locale]/legal/terms`. |
+| `/[locale]/privacy` | Redirect | Sends visitors to `/[locale]/legal/privacy`. |
+| `/[locale]/legal/merchant` | Redirect | Sends visitors to `/[locale]/legal/tokushoho`. |
 
 ### Product App1 (`http://localhost:3001`)
 
@@ -118,6 +126,10 @@ my-saas-suite
 | --- | --- | --- |
 | `/[locale]` | App1 landing page | No sign-in |
 | `/[locale]/dashboard` | App1 dashboard | Sign-in required, and `activeProducts` must include `app1`. Otherwise the visitor is redirected to the Hub login page at `http://localhost:3000/[locale]/login`. |
+| `/[locale]/legal/terms` | Terms of Service | No sign-in. Same Markdown as the Hub. |
+| `/[locale]/legal/privacy` | Privacy Policy | No sign-in. Same Markdown as the Hub. |
+| `/[locale]/legal/tokushoho` | Specified Commercial Transactions Act | No sign-in. Same Markdown as the Hub. |
+| `/[locale]/legal/specified-electronic-mail` | Specified Electronic Mail Act | No sign-in. Same Markdown as the Hub. |
 
 The App1 page repeats the same check as middleware. A session without `app1` in `activeProducts` does not open the dashboard. Role (`admin` or `member`) is not part of this gate.
 
@@ -136,6 +148,8 @@ The App1 page repeats the same check as middleware. A session without `app1` in 
 │   ├── messages/         en.json, ja.json
 │   └── middleware.ts     locale routing + JWT gate
 ├── docs/                 external requirements template
+├── packages/legal/       shared legal markdown and renderer
+│   └── content/{ja,en}/  terms, privacy, tokushoho, specified-electronic-mail
 ├── packages/cli/         .env.local generator
 ├── DESIGN.md             UI rules for Hub and products
 ├── turbo.json
@@ -145,6 +159,55 @@ The App1 page repeats the same check as middleware. A session without `app1` in 
 ```
 
 The steps for a new product are in [Adding a new product](#adding-a-new-product). Shared clauses for an external brief are in [docs/PRODUCT_REQUIREMENTS_TEMPLATE.md](./docs/PRODUCT_REQUIREMENTS_TEMPLATE.md).
+
+## Legal documents
+
+Counsel can review and return the plain Markdown files. Do not put the legal text back into TypeScript.
+
+| Document | File |
+| --- | --- |
+| 利用規約 / Terms of Service | `packages/legal/content/ja/terms.md` and `packages/legal/content/en/terms.md` |
+| プライバシーポリシー / Privacy Policy | `packages/legal/content/ja/privacy.md` and `packages/legal/content/en/privacy.md` |
+| 特定商取引法に基づく表記 | `packages/legal/content/ja/tokushoho.md` and `packages/legal/content/en/tokushoho.md` |
+| 特定電子メール法に基づく表記 | `packages/legal/content/ja/specified-electronic-mail.md` and `packages/legal/content/en/specified-electronic-mail.md` |
+
+Each file starts with `title`, `effectiveDate`, and `updatedAt`. The page shows those three values above the body. Replace every `{{TOKEN}}` before production. The same token has the same meaning in Japanese and English.
+
+| Placeholder | Replace with |
+| --- | --- |
+| `{{OPERATOR_NAME}}` | Legal name of the operator |
+| `{{REPRESENTATIVE_NAME}}` | Representative or operations manager |
+| `{{ADDRESS}}` | Business address |
+| `{{PHONE}}` | Phone number |
+| `{{CONTACT_EMAIL}}` | Public contact email, including complaints about advertising email |
+| `{{PRIVACY_EMAIL}}` | Privacy inquiry email |
+| `{{PAYMENT_TERMS}}` | When and how the user is charged, including tax and late payment |
+| `{{REFUND_POLICY}}` | Refund policy |
+| `{{DAMAGE_CAP}}` | Cap on damages |
+| `{{CANCELLATION_TERMS}}` | Cancellation window, term, and how to cancel |
+| `{{GOVERNING_LAW}}` | Governing law |
+| `{{VENUE}}` | Court of agreed jurisdiction |
+| `{{EFFECTIVE_DATE}}` | Date the document takes effect |
+| `{{UPDATED_AT}}` | Date of the latest revision |
+| `{{PRODUCT_NAME}}` | Product name covered by the product-specific terms |
+| `{{PRODUCT_SERVICE_DESCRIPTION}}` | Service description, hours, and support |
+| `{{PRODUCT_DATA_RETENTION}}` | What happens to customer content after cancellation |
+| `{{PRODUCT_API_LIMITS}}` | API limits and the consequence of exceeding them |
+| `{{PERSONAL_DATA_CATEGORIES}}` | Categories of personal information each product collects |
+| `{{PROCESSORS}}` | Other processors and cross-border transfers |
+| `{{CONTENT_RETENTION}}` | How long product content is kept |
+| `{{PRIVACY_CHANGE_NOTICE}}` | How a material privacy change is announced |
+| `{{TAX_TREATMENT}}` | Whether the displayed price includes tax |
+| `{{EXTRA_FEES}}` | Charges other than the product price, or a statement that there are none |
+| `{{DELIVERY_TIMING}}` | Any delay before the service becomes available |
+| `{{OPERATING_ENVIRONMENT}}` | Required browser or other environment |
+| `{{OPT_OUT_METHOD}}` | How a recipient refuses advertising email |
+| `{{OPT_OUT_TIMING}}` | How soon an opt-out takes effect |
+| `{{EMAIL_CONSENT}}` | How consent for advertising email is obtained |
+
+`terms.md` ends with the clause for changing the terms, announcing the change on the site or by email, and stating when it takes effect. `specified-electronic-mail.md` includes the sender's name, the sender's address, the complaint contact, and the opt-out method.
+
+Hub and App1 both read these files through `@my-saas-suite/legal`. A new product copies `products/app1/app/[locale]/legal` and adds the same dependency. The footer links to `/[locale]/legal/terms`, `/privacy`, `/tokushoho`, and `/specified-electronic-mail` on the app that is open.
 
 ## Adding a new product
 

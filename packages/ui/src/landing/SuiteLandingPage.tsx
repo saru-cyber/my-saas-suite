@@ -18,7 +18,7 @@ export interface SuiteLandingPageProps {
   /** Every piece of LP copy. Apps keep this in `config/lp-content.ts`. */
   content: LPContent;
   locale: LPLocale;
-  /** Hub origin for the footer's legal links. Defaults to NEXT_PUBLIC_HUB_URL. */
+  /** Hub origin for the suite account and dev portal links. Defaults to NEXT_PUBLIC_HUB_URL. */
   hubUrl?: string;
   /** Suite name shown in the footer copyright. */
   suiteName?: string;

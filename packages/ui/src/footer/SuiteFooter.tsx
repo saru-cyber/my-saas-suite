@@ -41,9 +41,16 @@ function devPortalHref(hub: string, locale: FooterLocale): string | null {
   return `${hub}/${locale}/dev`;
 }
 
+const legalLinks = [
+  { slug: "terms", label: "terms" },
+  { slug: "privacy", label: "privacy" },
+  { slug: "tokushoho", label: "tokushoho" },
+  { slug: "specified-electronic-mail", label: "email" },
+] as const;
+
 /**
  * Shared footer for the Hub and every product.
- * Legal links always point at the Hub legal page.
+ * Legal links open the four documents rendered by the current app.
  */
 export async function SuiteFooter({
   hubUrl,
@@ -60,7 +67,6 @@ export async function SuiteFooter({
   const currentOrigin = host ? `${proto}://${host}` : null;
   const labels = footerLabels[currentLocale];
   const hub = hubOrigin(hubUrl);
-  const legalHref = `${hub}/${currentLocale}/legal`;
   const productLinks = products ?? [{ href: app1Origin(app1Url), label: labels.app1 }];
   const links: SuiteSwitcherLink[] = [
     { href: `${hub}/${currentLocale}/dashboard`, label: labels.suiteAccount },
@@ -89,16 +95,22 @@ export async function SuiteFooter({
           <FooterDivider />
         </div>
         <div className="flex flex-wrap items-center gap-x-3 sm:justify-self-end">
-          <a
-            href={legalHref}
-            className="inline-flex min-h-11 items-center transition-colors duration-150 ease-out hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background motion-reduce:transition-none"
-          >
-            {labels.legal}
-          </a>
-          <FooterDivider />
           <FooterLocaleSwitcher currentLocale={currentLocale} ariaLabel={labels.languageNav} />
         </div>
       </div>
+      <nav aria-label={labels.legalNav} className="mx-auto flex max-w-6xl flex-wrap items-center gap-x-3 px-6 pb-2 text-sm md:px-8">
+        {legalLinks.map((item, index) => (
+          <span key={item.slug} className="inline-flex items-center gap-x-3">
+            {index > 0 ? <FooterDivider /> : null}
+            <a
+              href={`/${currentLocale}/legal/${item.slug}`}
+              className="inline-flex min-h-11 items-center transition-colors duration-150 ease-out hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background motion-reduce:transition-none"
+            >
+              {labels[item.label]}
+            </a>
+          </span>
+        ))}
+      </nav>
     </footer>
   );
 }
